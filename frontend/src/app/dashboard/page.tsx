@@ -1,0 +1,469 @@
+'use client';
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { useAuth, API_BASE_URL } from '@/context/AuthContext';
+import { 
+  DollarSign, 
+  Target, 
+  Percent, 
+  TrendingUp, 
+  UploadCloud, 
+  FileSpreadsheet, 
+  Loader2, 
+  AlertCircle, 
+  CheckCircle2, 
+  Sparkles,
+  BarChart2
+} from 'lucide-react';
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer, 
+  Legend 
+} from 'recharts';
+
+interface AggregatedMetrics {
+  totalSpend: number;
+  totalClicks: number;
+  totalImpressions: number;
+  totalConversions: number;
+  avgCtr: number;
+  avgCpc: number;
+  avgConversionRate: number;
+  avgCpa: number;
+  overallScore: number;
+  campaigns: any[];
+}
+
+export default function DashboardOverview() {
+  const { token, user } = useAuth();
+  const [metrics, setMetrics] = useState<AggregatedMetrics | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // CSV Upload States
+  const [uploading, setUploading] = useState(false);
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [jobStatus, setJobStatus] = useState<string | null>(null);
+  const [jobProgressMsg, setJobProgressMsg] = useState<string | null>(null);
+
+  // Chart Data State
+  const [chartData, setChartData] = useState<any[]>([]);
+
+  // Fetch all analytics data
+  const fetchAnalytics = useCallback(async (bypassCache = false) => {
+    if (!token) return;
+    try {
+      setLoading(true);
+      const res = await fetch(`${API_BASE_URL}/analytics?bypassCache=${bypassCache}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch analytics.');
+      setMetrics(data);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Error loading dashboard metrics.');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  // Fetch campaign metrics for charts
+  const fetchCampaigns = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/campaigns`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch campaigns.');
+      
+      // Process date aggregation
+      const dailyMap = new Map<string, { spend: number; conversions: number; clicks: number }>();
+      
+      data.forEach((camp: any) => {
+        camp.metrics.forEach((m: any) => {
+          const dateStr = new Date(m.date).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+          });
+          const existing = dailyMap.get(dateStr) || { spend: 0, conversions: 0, clicks: 0 };
+          existing.spend += m.spend;
+          existing.conversions += m.conversions;
+          existing.clicks += m.clicks;
+          dailyMap.set(dateStr, existing);
+        });
+      });
+
+      const formattedData = Array.from(dailyMap.entries()).map(([date, vals]) => ({
+        date,
+        spend: parseFloat(vals.spend.toFixed(2)),
+        conversions: vals.conversions,
+        clicks: vals.clicks,
+      })).slice(-14); // Last 14 days
+
+      setChartData(formattedData);
+    } catch (err) {
+      console.error('Failed to load chart metrics:', err);
+    }
+  }, [token]);
+
+  const loadData = useCallback(async () => {
+    await fetchAnalytics();
+    await fetchCampaigns();
+  }, [fetchAnalytics, fetchCampaigns]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // Poll job status until completed/failed
+  useEffect(() => {
+    if (!jobId || !token) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const job = await res.json();
+        
+        if (!res.ok) throw new Error(job.error || 'Failed to poll job status.');
+
+        setJobStatus(job.status);
+        if (job.status === 'PROCESSING') {
+          setJobProgressMsg('Ingesting and validating campaign data...');
+        } else if (job.status === 'COMPLETED') {
+          setJobProgressMsg(`Successfully processed ${job.validRows} rows!`);
+          clearInterval(interval);
+          setUploading(false);
+          setJobId(null);
+          // Refresh dashboard data
+          await fetchAnalytics(true); // Bypass cache to load new data
+          await fetchCampaigns();
+          setTimeout(() => {
+            setJobStatus(null);
+            setJobProgressMsg(null);
+          }, 4000);
+        } else if (job.status === 'FAILED') {
+          setError(job.error || 'Database ingestion failed.');
+          clearInterval(interval);
+          setUploading(false);
+          setJobId(null);
+          setTimeout(() => {
+            setJobStatus(null);
+            setJobProgressMsg(null);
+          }, 5000);
+        }
+      } catch (err: any) {
+        console.error(err);
+        setError(err.message || 'Error checking background import status.');
+        clearInterval(interval);
+        setUploading(false);
+        setJobId(null);
+      }
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [jobId, token, fetchAnalytics, fetchCampaigns]);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !token) return;
+
+    setError(null);
+    setUploading(true);
+    setJobStatus('PENDING');
+    setJobProgressMsg('Uploading CSV to backend ingestion pipeline...');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/upload`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'File upload failed.');
+      }
+
+      setJobId(data.jobId);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'File upload failed.');
+      setUploading(false);
+      setJobStatus(null);
+      setJobProgressMsg(null);
+    }
+  };
+
+  return (
+    <div className="space-y-8 z-10 relative">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-slate-100 tracking-tight">
+            Dashboard Overview
+          </h1>
+          <p className="text-slate-400 mt-1">
+            Welcome back, <span className="text-indigo-400 font-semibold">{user?.name}</span>. Monitor campaign health and optimize spend.
+          </p>
+        </div>
+
+        {/* Dynamic CSV Upload Widget */}
+        <div className="bg-slate-900/60 border border-slate-800/80 rounded-xl p-3 flex items-center gap-4 max-w-sm shrink-0 backdrop-blur-md">
+          <div className="bg-indigo-600/10 p-2.5 rounded-lg text-indigo-400">
+            {uploading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <FileSpreadsheet className="w-5 h-5" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xs font-bold text-slate-200">Import CSV metrics</h3>
+            <p className="text-[10px] text-slate-500 truncate leading-snug">
+              {jobProgressMsg || 'Upload Date, Campaign, Spend, Clicks...'}
+            </p>
+          </div>
+          <div>
+            <label className="relative flex items-center justify-center px-3 py-1.5 border border-indigo-500/30 hover:border-indigo-500/50 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-lg text-xs font-bold cursor-pointer transition-all">
+              Choose File
+              <input 
+                type="file" 
+                accept=".csv" 
+                onChange={handleFileUpload} 
+                disabled={uploading} 
+                className="hidden" 
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      {error && (
+        <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-sm font-bold text-rose-300">Data Import/System Alert</h4>
+            <p className="text-xs text-rose-400/90 mt-0.5">{error}</p>
+          </div>
+        </div>
+      )}
+
+      {jobStatus === 'COMPLETED' && (
+        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 flex items-start gap-3">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-sm font-bold text-emerald-300">Data Processing Complete</h4>
+            <p className="text-xs text-emerald-400/90 mt-0.5">{jobProgressMsg}</p>
+          </div>
+        </div>
+      )}
+
+      {/* KPI Cards Grid */}
+      {loading && !metrics ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <div key={idx} className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 h-28 animate-pulse" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Card 1: Total Spend */}
+          <div className="bg-slate-900/40 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md">
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Ad Spend</span>
+              <div className="bg-emerald-500/10 p-2 rounded-xl text-emerald-400 group-hover:scale-110 transition-transform duration-300">
+                <DollarSign className="w-5 h-5" />
+              </div>
+            </div>
+            <div className="mt-3">
+              <h2 className="text-2xl font-bold text-slate-100">
+                ${metrics?.totalSpend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+              </h2>
+              <p className="text-[10px] text-slate-500 mt-1 font-semibold">Across all campaigns</p>
+            </div>
+          </div>
+
+          {/* Card 2: Total Conversions */}
+          <div className="bg-slate-900/40 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md">
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Conversions</span>
+              <div className="bg-indigo-500/10 p-2 rounded-xl text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                <Target className="w-5 h-5" />
+              </div>
+            </div>
+            <div className="mt-3">
+              <h2 className="text-2xl font-bold text-slate-100">
+                {metrics?.totalConversions.toLocaleString() || '0'}
+              </h2>
+              <p className="text-[10px] text-slate-500 mt-1 font-semibold">
+                Avg CV%: {metrics?.avgConversionRate.toFixed(2) || '0.00'}%
+              </p>
+            </div>
+          </div>
+
+          {/* Card 3: Cost Per Acquisition */}
+          <div className="bg-slate-900/40 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md">
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Average CPA</span>
+              <div className="bg-rose-500/10 p-2 rounded-xl text-rose-400 group-hover:scale-110 transition-transform duration-300">
+                <Percent className="w-5 h-5" />
+              </div>
+            </div>
+            <div className="mt-3">
+              <h2 className="text-2xl font-bold text-slate-100">
+                ${metrics?.avgCpa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+              </h2>
+              <p className="text-[10px] text-slate-500 mt-1 font-semibold">
+                Avg CPC: ${metrics?.avgCpc.toFixed(2) || '0.00'}
+              </p>
+            </div>
+          </div>
+
+          {/* Card 4: Overall Performance Score */}
+          <div className="bg-slate-900/40 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md relative overflow-hidden">
+            {/* Background glow for score */}
+            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-600/10 rounded-full blur-xl pointer-events-none" />
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Performance Score</span>
+              <div className="bg-purple-500/10 p-2 rounded-xl text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+            </div>
+            <div className="mt-3">
+              <h2 className="text-2xl font-bold text-slate-100 flex items-baseline gap-1">
+                {metrics?.overallScore || '0'}<span className="text-xs text-slate-500">/100</span>
+              </h2>
+              <p className="text-[10px] text-slate-500 mt-1 font-semibold flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-indigo-400 animate-pulse" /> Custom Score Algorithm
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Charts & Ingestion Instructions Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Performance Chart Card */}
+        <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 lg:col-span-2 flex flex-col justify-between backdrop-blur-md h-[400px]">
+          <div className="flex justify-between items-center pb-4 border-b border-slate-900">
+            <div>
+              <h3 className="text-sm font-bold text-slate-200">Daily Metric Overview</h3>
+              <p className="text-[10px] text-slate-500">Trailing 14 days campaign performance</p>
+            </div>
+            <div className="bg-slate-800/50 p-1.5 rounded-lg border border-slate-700/30 text-slate-400 hover:text-slate-200 cursor-pointer">
+              <BarChart2 className="w-4 h-4" />
+            </div>
+          </div>
+
+          <div className="flex-1 mt-6 text-xs min-h-0">
+            {chartData.length === 0 ? (
+              <div className="h-full flex flex-col justify-center items-center gap-3">
+                <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+                <span className="text-slate-500 font-medium">Waiting for campaign data...</span>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorSpend" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.2}/>
+                      <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                    </linearGradient>
+                    <linearGradient id="colorConversions" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b/40" vertical={false} />
+                  <XAxis dataKey="date" stroke="#64748b" />
+                  <YAxis yAxisId="left" stroke="#4f46e5" />
+                  <YAxis yAxisId="right" orientation="right" stroke="#10b981" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#0f172a', 
+                      borderColor: '#1e293b', 
+                      color: '#cbd5e1', 
+                      borderRadius: '12px' 
+                    }} 
+                  />
+                  <Legend verticalAlign="top" height={36} iconType="circle" />
+                  <Area 
+                    yAxisId="left" 
+                    type="monotone" 
+                    dataKey="spend" 
+                    name="Spend ($)" 
+                    stroke="#4f46e5" 
+                    strokeWidth={2}
+                    fillOpacity={1} 
+                    fill="url(#colorSpend)" 
+                  />
+                  <Area 
+                    yAxisId="right" 
+                    type="monotone" 
+                    dataKey="conversions" 
+                    name="Conversions" 
+                    stroke="#10b981" 
+                    strokeWidth={2}
+                    fillOpacity={1} 
+                    fill="url(#colorConversions)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+
+        {/* Upload and Ingestion Instructions Card */}
+        <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden">
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
+              <UploadCloud className="w-5 h-5 text-indigo-400" /> System Guide
+            </h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              AdWise AI runs offline analytics computations. To test the dashboard features, upload our generated test data file:
+            </p>
+            <div className="bg-slate-950/80 border border-slate-850 p-4 rounded-xl space-y-2">
+              <p className="text-[10px] font-semibold text-indigo-400 uppercase tracking-widest leading-none">Test Dataset Location</p>
+              <p className="text-xs font-mono text-slate-200 select-all break-all bg-slate-900 p-2 rounded border border-slate-800">
+                adwise-ai/campaign_data.csv
+              </p>
+            </div>
+            <ul className="space-y-2.5 text-xs text-slate-400">
+              <li className="flex items-start gap-2.5">
+                <span className="bg-indigo-600/20 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">1</span>
+                <span>Upload the CSV using the <strong>Import CSV</strong> button at the top.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="bg-indigo-600/20 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">2</span>
+                <span>The backend processes data on an <strong>asynchronous background worker thread</strong>.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="bg-indigo-600/20 text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">3</span>
+                <span>Once the processing state transitions to completed, page metrics will refresh.</span>
+              </li>
+            </ul>
+          </div>
+          <div className="mt-6 pt-4 border-t border-slate-900 flex items-center gap-2 text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            AdWise AI Analytics Suite v1.0
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
