@@ -32,8 +32,6 @@ export default function CampaignInsights() {
   }, [token]);
 
   useEffect(() => {
-    fetchForecast();
-    // wait, we meant fetchInsights() but this is a typo in state hook. Let's call fetchInsights()!
     fetchInsights();
   }, [fetchInsights]);
 
@@ -114,8 +112,6 @@ export default function CampaignInsights() {
 
     return parts.length > 0 ? parts : text;
   };
-
-  const fetchForecast = () => {}; // dummy handler
 
   return (
     <div className="space-y-8 z-10 relative">

@@ -41,8 +41,8 @@ class QueueService {
                 where: { id: jobId },
                 data: { status: 'PROCESSING' },
             });
-            // 2. Parse and validate CSV data
-            const parseResult = await (0, csv_1.parseCampaignCSV)(filePath);
+            // 2. Parse and validate file data (supports CSV and Excel)
+            const parseResult = await (0, csv_1.parseCampaignFile)(filePath);
             if (parseResult.validRows.length === 0) {
                 throw new Error(parseResult.errors[0] || 'No valid rows found in the CSV. Please check column headers and format.');
             }

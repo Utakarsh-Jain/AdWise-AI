@@ -19,7 +19,7 @@ async function uploadCSV(req, res) {
             return res.status(401).json({ error: 'Unauthorized user context.' });
         }
         if (!file) {
-            return res.status(400).json({ error: 'Please upload a CSV file.' });
+            return res.status(400).json({ error: 'Please upload a CSV or Excel file.' });
         }
         const filePath = file.path;
         const originalName = file.originalname;

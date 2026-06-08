@@ -180,7 +180,7 @@ export default function DashboardOverview() {
     setError(null);
     setUploading(true);
     setJobStatus('PENDING');
-    setJobProgressMsg('Uploading CSV to backend ingestion pipeline...');
+    setJobProgressMsg('Uploading file to backend ingestion pipeline...');
 
     const formData = new FormData();
     formData.append('file', file);
@@ -233,9 +233,9 @@ export default function DashboardOverview() {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-xs font-bold text-slate-200">Import CSV metrics</h3>
+            <h3 className="text-xs font-bold text-slate-200">Import CSV / Excel metrics</h3>
             <p className="text-[10px] text-slate-500 truncate leading-snug">
-              {jobProgressMsg || 'Upload Date, Campaign, Spend, Clicks...'}
+              {jobProgressMsg || 'Upload CSV or Excel file...'}
             </p>
           </div>
           <div>
@@ -243,7 +243,7 @@ export default function DashboardOverview() {
               Choose File
               <input 
                 type="file" 
-                accept=".csv" 
+                accept=".csv,.xlsx,.xls" 
                 onChange={handleFileUpload} 
                 disabled={uploading} 
                 className="hidden" 

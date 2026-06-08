@@ -16,7 +16,7 @@ export async function uploadCSV(req: AuthRequest, res: Response) {
     }
 
     if (!file) {
-      return res.status(400).json({ error: 'Please upload a CSV file.' });
+      return res.status(400).json({ error: 'Please upload a CSV or Excel file.' });
     }
 
     const filePath = file.path;

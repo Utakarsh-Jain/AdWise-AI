@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import prisma from '../db';
-import { parseCampaignCSV } from '../utils/csv';
+import { parseCampaignFile } from '../utils/csv';
 
 export class QueueService {
   private static activeJobs = new Set<string>();
@@ -42,8 +42,8 @@ export class QueueService {
         data: { status: 'PROCESSING' },
       });
 
-      // 2. Parse and validate CSV data
-      const parseResult = await parseCampaignCSV(filePath);
+      // 2. Parse and validate file data (supports CSV and Excel)
+      const parseResult = await parseCampaignFile(filePath);
 
       if (parseResult.validRows.length === 0) {
         throw new Error(
