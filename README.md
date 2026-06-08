@@ -1,10 +1,10 @@
-# AdWise AI 🚀
+# AdWise AI 
 
 AdWise AI is a premium, data-driven marketing analytics and budget optimization platform powered by Gemini Generative AI. It allows growth marketers and ad-ops professionals to upload campaign performance datasets, visualize marketing metrics in real-time, optimize budgets automatically across platforms, and extract strategic AI-generated recommendations.
 
 ---
 
-## 🌟 Key Features
+##  Key Features
 
 - **Asynchronous Data Ingestion**: Supports uploading both **CSV** and **Excel** (`.xlsx`, `.xls`) file formats containing campaign metrics. Processing runs in the background.
 - **Smart Campaign Identification**: Automatically detects common platforms (Google, Meta, LinkedIn, TikTok, Twitter/X) from campaign names if platform designations are omitted.
@@ -15,7 +15,7 @@ AdWise AI is a premium, data-driven marketing analytics and budget optimization 
 
 ---
 
-## 🛠️ Project Structure
+##  Project Structure
 
 The project is structured as a monorepo containing:
 1. **/backend**: Node.js/Express application with Prisma ORM, SQLite database, and TypeScript.
@@ -23,7 +23,7 @@ The project is structured as a monorepo containing:
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Node.js (v18+ recommended)
@@ -86,7 +86,7 @@ The project is structured as a monorepo containing:
 
 ---
 
-## 📊 Testing with Datasets
+## Testing with Datasets
 
 A sample dataset is provided at the root of the project to test the ingestion pipeline:
 - **Location**: `campaign_data.csv`
@@ -102,7 +102,7 @@ A sample dataset is provided at the root of the project to test the ingestion pi
 
 ---
 
-## 💻 Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js, React, TailwindCSS, Lucide Icons, Recharts
 - **Backend**: Node.js, Express, TypeScript, Multer, SheetJS (XLSX), CSV-Parser
