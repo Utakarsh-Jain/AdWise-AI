@@ -16,6 +16,12 @@ import { getForecastData } from './controllers/forecast';
 import { getAiRecommendations, postChat } from './controllers/chat';
 import { authenticateJWT } from './middleware/auth';
 
+// Social integration controllers & scheduler
+import { getAuthUrl, handleCallback, getAccounts, disconnectAccount, manualSync } from './controllers/social';
+import { getSocialAnalytics, getSocialInsights, getSocialRecommendations } from './controllers/socialAnalytics';
+import { SchedulerService } from './services/scheduler';
+
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -84,6 +90,16 @@ app.get('/api/forecast', authenticateJWT, getForecastData);
 app.get('/api/ai/recommendations', authenticateJWT, getAiRecommendations);
 app.post('/api/ai/chat', authenticateJWT, postChat);
 
+// 6. Social Account Integration & Analytics
+app.get('/api/social/auth-url', authenticateJWT, getAuthUrl);
+app.post('/api/social/callback', authenticateJWT, handleCallback);
+app.get('/api/social/accounts', authenticateJWT, getAccounts);
+app.delete('/api/social/accounts/:id', authenticateJWT, disconnectAccount);
+app.post('/api/social/sync', authenticateJWT, manualSync);
+app.get('/api/social/analytics', authenticateJWT, getSocialAnalytics);
+app.get('/api/social/insights', authenticateJWT, getSocialInsights);
+app.get('/api/social/recommendations', authenticateJWT, getSocialRecommendations);
+
 // Healthcheck endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
@@ -98,4 +114,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 // Start Server
 app.listen(PORT, () => {
   console.log(`🚀 AdWise AI Backend is running on port ${PORT}`);
+  // Start scheduled social synchronization checks
+  SchedulerService.startScheduler();
 });

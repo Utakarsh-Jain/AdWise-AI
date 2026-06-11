@@ -9,7 +9,7 @@ class GeminiService {
             return null;
         }
         const genAI = new generative_ai_1.GoogleGenerativeAI(apiKey);
-        return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        return genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     }
     /**
      * Generates strategic recommendations using campaign data and budget reallocations.
@@ -131,9 +131,8 @@ User Question:
         }
     }
     static getMockRecommendations(payload) {
-        return `### 📊 Executive Optimization Report (AI Simulated)
+        return `###  Executive Optimization Report (AI Simulated)
 
-*Note: Configure \`GEMINI_API_KEY\` in your backend \`.env\` file to activate real Gemini insights.*
 
 #### 1. Strategic Insights
 - **Top Performer**: The campaign **${payload.topCampaigns[0]?.name || 'N/A'}** on **${payload.topCampaigns[0]?.platform || 'N/A'}** has an exceptional performance score of **${payload.topCampaigns[0]?.score || 0}/100** and a CPA of **${payload.topCampaigns[0]?.cpa || '$0.00'}**. We should look to duplicate its targeting structure.

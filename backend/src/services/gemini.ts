@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+    import { GoogleGenerativeAI } from '@google/generative-ai';
 import { AggregatedMetrics } from './analytics';
 import { OptimizationResult } from './optimization';
 
@@ -146,9 +146,8 @@ User Question:
   }
 
   private static getMockRecommendations(payload: any): string {
-    return `### 📊 Executive Optimization Report (AI Simulated)
+    return `###  Executive Optimization Report (AI Simulated)
 
-*Note: Configure \`GEMINI_API_KEY\` in your backend \`.env\` file to activate real Gemini insights.*
 
 #### 1. Strategic Insights
 - **Top Performer**: The campaign **${payload.topCampaigns[0]?.name || 'N/A'}** on **${payload.topCampaigns[0]?.platform || 'N/A'}** has an exceptional performance score of **${payload.topCampaigns[0]?.score || 0}/100** and a CPA of **${payload.topCampaigns[0]?.cpa || '$0.00'}**. We should look to duplicate its targeting structure.

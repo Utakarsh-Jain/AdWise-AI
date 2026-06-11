@@ -18,6 +18,10 @@ const analytics_1 = require("./controllers/analytics");
 const forecast_1 = require("./controllers/forecast");
 const chat_1 = require("./controllers/chat");
 const auth_2 = require("./middleware/auth");
+// Social integration controllers & scheduler
+const social_1 = require("./controllers/social");
+const socialAnalytics_1 = require("./controllers/socialAnalytics");
+const scheduler_1 = require("./services/scheduler");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 // Enable CORS
@@ -74,6 +78,15 @@ app.get('/api/forecast', auth_2.authenticateJWT, forecast_1.getForecastData);
 // 5. Gen AI Assistance
 app.get('/api/ai/recommendations', auth_2.authenticateJWT, chat_1.getAiRecommendations);
 app.post('/api/ai/chat', auth_2.authenticateJWT, chat_1.postChat);
+// 6. Social Account Integration & Analytics
+app.get('/api/social/auth-url', auth_2.authenticateJWT, social_1.getAuthUrl);
+app.post('/api/social/callback', auth_2.authenticateJWT, social_1.handleCallback);
+app.get('/api/social/accounts', auth_2.authenticateJWT, social_1.getAccounts);
+app.delete('/api/social/accounts/:id', auth_2.authenticateJWT, social_1.disconnectAccount);
+app.post('/api/social/sync', auth_2.authenticateJWT, social_1.manualSync);
+app.get('/api/social/analytics', auth_2.authenticateJWT, socialAnalytics_1.getSocialAnalytics);
+app.get('/api/social/insights', auth_2.authenticateJWT, socialAnalytics_1.getSocialInsights);
+app.get('/api/social/recommendations', auth_2.authenticateJWT, socialAnalytics_1.getSocialRecommendations);
 // Healthcheck endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
@@ -86,4 +99,6 @@ app.use((err, req, res, next) => {
 // Start Server
 app.listen(PORT, () => {
     console.log(`🚀 AdWise AI Backend is running on port ${PORT}`);
+    // Start scheduled social synchronization checks
+    scheduler_1.SchedulerService.startScheduler();
 });

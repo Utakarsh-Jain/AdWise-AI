@@ -60,7 +60,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-300">
       {/* Background gradients */}
       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
@@ -70,14 +70,14 @@ export default function SignupPage() {
           <div className="bg-indigo-600 p-2.5 rounded-xl text-white shadow-lg shadow-indigo-500/20">
             <Sparkles className="w-6 h-6 animate-pulse" />
           </div>
-          <span className="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-400 bg-clip-text text-transparent">
+          <span className="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-slate-800 via-slate-600 to-indigo-600 dark:from-white dark:via-slate-200 dark:to-indigo-400 bg-clip-text text-transparent">
             AdWise AI
           </span>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-100 tracking-tight">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight transition-colors">
           Create your free account
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-400">
+        <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-400 transition-colors">
           Or{' '}
           <Link href="/login" className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
             sign in to your existing account
@@ -86,7 +86,7 @@ export default function SignupPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10 px-4 sm:px-0">
-        <div className="bg-slate-900/60 backdrop-blur-xl py-8 px-4 shadow-2xl border border-slate-800/80 rounded-2xl sm:px-10">
+        <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl py-8 px-4 shadow-lg dark:shadow-2xl border border-slate-200 dark:border-slate-800/80 rounded-2xl sm:px-10 transition-colors">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 flex items-start gap-3">
@@ -96,7 +96,7 @@ export default function SignupPage() {
             )}
 
             <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-slate-300">
+              <label htmlFor="name" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors">
                 Full Name
               </label>
               <div className="mt-1">
@@ -108,13 +108,13 @@ export default function SignupPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="John Doe"
-                  className="appearance-none block w-full px-4 py-3 rounded-xl border border-slate-800 bg-slate-950/50 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="appearance-none block w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-slate-300">
+              <label htmlFor="email" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors">
                 Email address
               </label>
               <div className="mt-1">
@@ -127,13 +127,13 @@ export default function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
-                  className="appearance-none block w-full px-4 py-3 rounded-xl border border-slate-800 bg-slate-950/50 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="appearance-none block w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-slate-300">
+              <label htmlFor="password" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 transition-colors">
                 Password
               </label>
               <div className="mt-1">
@@ -145,7 +145,7 @@ export default function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="•••••••• (min 6 characters)"
-                  className="appearance-none block w-full px-4 py-3 rounded-xl border border-slate-800 bg-slate-950/50 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  className="appearance-none block w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
