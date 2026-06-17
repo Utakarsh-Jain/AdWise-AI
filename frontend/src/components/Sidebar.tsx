@@ -16,9 +16,7 @@ import {
   User as UserIcon,
   Sparkles,
   Sun,
-  Moon,
-  Share2,
-  Link2
+  Moon
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -32,8 +30,7 @@ export default function Sidebar() {
     { name: 'Forecasting', href: '/dashboard/forecast', icon: TrendingUp },
     { name: 'AI Insights', href: '/dashboard/insights', icon: Lightbulb },
     { name: 'AI Chat Analyst', href: '/dashboard/chat', icon: MessageSquare },
-    { name: 'Social Dashboard', href: '/dashboard/social', icon: Share2 },
-    { name: 'Connect Accounts', href: '/dashboard/accounts', icon: Link2 },
+
   ];
 
   return (
