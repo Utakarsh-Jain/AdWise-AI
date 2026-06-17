@@ -30,7 +30,7 @@ export default function Sidebar() {
     { name: 'Forecasting', href: '/dashboard/forecast', icon: TrendingUp },
     { name: 'AI Insights', href: '/dashboard/insights', icon: Lightbulb },
     { name: 'AI Chat Analyst', href: '/dashboard/chat', icon: MessageSquare },
-
+    { name: 'AI Ad Generator', href: '/dashboard/ad-generator', icon: Sparkles },
   ];
 
   return (

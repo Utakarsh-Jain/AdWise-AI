@@ -21,6 +21,9 @@ import { getAuthUrl, handleCallback, getAccounts, disconnectAccount, manualSync 
 import { getSocialAnalytics, getSocialInsights, getSocialRecommendations } from './controllers/socialAnalytics';
 import { SchedulerService } from './services/scheduler';
 
+// AI Ad Copy Generator
+import { generateAdCopy } from './controllers/adGenerator';
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -89,6 +92,7 @@ app.get('/api/forecast', authenticateJWT, getForecastData);
 // 5. Gen AI Assistance
 app.get('/api/ai/recommendations', authenticateJWT, getAiRecommendations);
 app.post('/api/ai/chat', authenticateJWT, postChat);
+app.post('/api/ad/generate', authenticateJWT, generateAdCopy);
 
 // 6. Social Account Integration & Analytics
 app.get('/api/social/auth-url', authenticateJWT, getAuthUrl);

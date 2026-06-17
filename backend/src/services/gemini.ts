@@ -209,4 +209,58 @@ I analyzed your campaign data, which contains **${campaigns.length} campaigns** 
 
 *Try asking me: "Which is my best campaign?" or "How can I optimize my budgets?" to see a detailed report!*`;
   }
+
+  /**
+   * Generates tailored ad copies (Headline, Primary Text, CTA, Description) using Gemini.
+   */
+  public static async generateAdCopy(
+    platform: string,
+    description: string,
+    audience: string,
+    keywords?: string
+  ): Promise<{ headline: string; primaryText: string; cta: string; description: string }> {
+    const model = this.getModel();
+
+    const fallback = this.getMockAdCopy(platform, description);
+
+    if (!model) {
+      return fallback;
+    }
+
+    const systemPrompt = `You are a professional ad copywriter and conversion optimization expert.
+Create high-converting ad copy for the following platform: "${platform}".
+Product/Service Description: "${description}"
+Target Audience: "${audience}"
+Keywords/Themes: "${keywords || 'General'}"
+
+Return ONLY a raw JSON object with the following fields, and NO other text or markdown block markers:
+{
+  "headline": "A short, engaging ad headline under 40 characters",
+  "primaryText": "An engaging main ad body copy/description tailored for ${platform}. Include relevant emojis.",
+  "cta": "Recommended call to action text (e.g. Learn More, Sign Up, Shop Now)",
+  "description": "A brief sub-headline or description under 80 characters"
+}`;
+
+    try {
+      const result = await model.generateContent(systemPrompt);
+      const response = await result.response;
+      const text = response.text().trim();
+      
+      // Clean up markdown markers if any (e.g. ```json ... ```)
+      const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
+      return JSON.parse(cleanJson);
+    } catch (err: any) {
+      console.error('Gemini Ad Gen Error, using mock fallback:', err);
+      return fallback;
+    }
+  }
+
+  private static getMockAdCopy(platform: string, description: string): { headline: string; primaryText: string; cta: string; description: string } {
+    return {
+      headline: `Get Started with ${description.split(' ').slice(0, 3).join(' ') || 'AdWise'}`,
+      primaryText: `Stop wasting your budget! 🚀 ${description} - Optimize your campaign results using our advanced AI-driven analytical engine today. Click below to start! ✨`,
+      cta: "Learn More",
+      description: "Scale your business with AI optimization"
+    };
+  }
 }

@@ -22,6 +22,8 @@ const auth_2 = require("./middleware/auth");
 const social_1 = require("./controllers/social");
 const socialAnalytics_1 = require("./controllers/socialAnalytics");
 const scheduler_1 = require("./services/scheduler");
+// AI Ad Copy Generator
+const adGenerator_1 = require("./controllers/adGenerator");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 // Enable CORS
@@ -78,6 +80,7 @@ app.get('/api/forecast', auth_2.authenticateJWT, forecast_1.getForecastData);
 // 5. Gen AI Assistance
 app.get('/api/ai/recommendations', auth_2.authenticateJWT, chat_1.getAiRecommendations);
 app.post('/api/ai/chat', auth_2.authenticateJWT, chat_1.postChat);
+app.post('/api/ad/generate', auth_2.authenticateJWT, adGenerator_1.generateAdCopy);
 // 6. Social Account Integration & Analytics
 app.get('/api/social/auth-url', auth_2.authenticateJWT, social_1.getAuthUrl);
 app.post('/api/social/callback', auth_2.authenticateJWT, social_1.handleCallback);
