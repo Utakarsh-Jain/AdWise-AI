@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth, API_BASE_URL } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { 
   LineChart, 
   Line, 
@@ -37,6 +38,7 @@ interface ForecastResult {
 
 export default function CampaignForecasting() {
   const { token } = useAuth();
+  const { theme } = useTheme();
   const [forecastDays, setForecastDays] = useState(7);
   const [forecastData, setForecastData] = useState<ForecastPoint[]>([]);
   const [historicalCount, setHistoricalCount] = useState(0);
@@ -103,20 +105,20 @@ export default function CampaignForecasting() {
   if (loading && forecastData.length === 0) {
     return (
       <div className="h-[60vh] flex flex-col justify-center items-center gap-3">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-        <span className="text-slate-400 font-medium">Running Linear Regression projections...</span>
+        <Loader2 className="w-8 h-8 animate-spin text-zinc-900 dark:text-zinc-100" />
+        <span className="text-zinc-550 dark:text-zinc-400 font-medium">Running Linear Regression projections...</span>
       </div>
     );
   }
 
   if (error || forecastData.length === 0) {
     return (
-      <div className="h-[60vh] flex flex-col justify-center items-center text-center max-w-md mx-auto space-y-4">
-        <div className="bg-slate-900 border border-slate-800 p-4 rounded-full text-indigo-400 shadow-xl shadow-indigo-500/5">
+      <div className="h-[60vh] flex flex-col justify-center items-center text-center max-w-md mx-auto space-y-4 px-4">
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 rounded-full text-zinc-900 dark:text-zinc-100 shadow-xl shadow-zinc-500/5">
           <AlertCircle className="w-10 h-10" />
         </div>
-        <h2 className="text-xl font-bold text-slate-200">No Forecasting Available</h2>
-        <p className="text-xs text-slate-500 leading-relaxed">
+        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">No Forecasting Available</h2>
+        <p className="text-xs text-zinc-500 dark:text-zinc-450 leading-relaxed">
           {error || 'Forecasting requires historical campaign data. Please upload a marketing metrics CSV on the main overview dashboard first.'}
         </p>
       </div>
@@ -133,28 +135,28 @@ export default function CampaignForecasting() {
   };
 
   return (
-    <div className="space-y-8 z-10 relative">
+    <div className="space-y-6 md:space-y-8 z-10 relative">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-100 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
             Predictive Forecasting
           </h1>
-          <p className="text-slate-400 mt-1">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
             Data projections powered by a blended Linear Regression and Moving Average algorithm.
           </p>
         </div>
 
         {/* Period Selector Buttons */}
-        <div className="bg-slate-900/60 border border-slate-800/80 p-1 rounded-xl flex items-center gap-1 backdrop-blur-md self-start">
+        <div className="bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/80 p-1 rounded-xl flex items-center gap-1 backdrop-blur-md self-start">
           {[7, 14, 30].map((days) => (
             <button
               key={days}
               onClick={() => handlePeriodChange(days)}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${
                 forecastDays === days
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-zinc-950 dark:bg-zinc-800 text-white shadow-md'
+                  : 'text-zinc-650 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
               }`}
             >
               {days} Days Out
@@ -164,31 +166,31 @@ export default function CampaignForecasting() {
       </div>
 
       {/* Main Projections LineChart */}
-      <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between backdrop-blur-md h-[450px]">
-        <div className="flex justify-between items-center pb-4 border-b border-slate-900">
+      <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md h-[320px] sm:h-[450px] shadow-sm dark:shadow-none transition-colors">
+        <div className="flex justify-between items-center pb-4 border-b border-zinc-200 dark:border-zinc-900">
           <div>
-            <h3 className="text-sm font-bold text-slate-200">Spend & Conversions Projections</h3>
-            <p className="text-[10px] text-slate-500">
+            <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200">Spend & Conversions Projections</h3>
+            <p className="text-[10px] text-zinc-500">
               Showing {historicalCount} historical days + {forecastDays} projected days (dashed lines)
             </p>
           </div>
-          <div className="bg-slate-800/50 p-1.5 rounded-lg border border-slate-700/30 text-slate-400">
+          <div className="bg-zinc-100 dark:bg-zinc-800/50 p-1.5 rounded-lg border border-zinc-250/30 dark:border-zinc-700/30 text-zinc-500 dark:text-zinc-400">
             <LineChartIcon className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="flex-1 mt-6 text-xs min-h-0">
+        <div className="flex-1 mt-6 text-[10px] sm:text-xs min-h-0">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={forecastData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b/40" vertical={false} />
-              <XAxis dataKey="date" tickFormatter={formatChartDate} stroke="#64748b" />
-              <YAxis yAxisId="left" stroke="#4f46e5" />
+              <CartesianGrid strokeDasharray="3 3" stroke={theme === 'light' ? '#e2e8f0' : '#1e293b/40'} vertical={false} />
+              <XAxis dataKey="date" tickFormatter={formatChartDate} stroke={theme === 'light' ? '#71717a' : '#a1a1aa'} />
+              <YAxis yAxisId="left" stroke={theme === 'light' ? '#18181b' : '#ffffff'} />
               <YAxis yAxisId="right" orientation="right" stroke="#10b981" />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: '#0f172a', 
-                  borderColor: '#1e293b', 
-                  color: '#cbd5e1', 
+                  backgroundColor: theme === 'light' ? '#ffffff' : '#09090b', 
+                  borderColor: theme === 'light' ? '#e4e4e7' : '#27272a',
+                  color: theme === 'light' ? '#18181b' : '#f4f4f5', 
                   borderRadius: '12px' 
                 }} 
               />
@@ -199,7 +201,7 @@ export default function CampaignForecasting() {
                 type="monotone" 
                 dataKey="actualSpend" 
                 name="Historical Spend ($)" 
-                stroke="#4f46e5" 
+                stroke={theme === 'light' ? '#18181b' : '#ffffff'} 
                 strokeWidth={2.5}
                 dot={{ r: 2 }}
                 activeDot={{ r: 5 }}
@@ -222,7 +224,7 @@ export default function CampaignForecasting() {
                 type="monotone" 
                 dataKey="forecastSpend" 
                 name="Projected Spend ($)" 
-                stroke="#4f46e5" 
+                stroke={theme === 'light' ? '#71717a' : '#a1a1aa'} 
                 strokeWidth={2.5}
                 strokeDasharray="5 5"
                 dot={{ r: 0 }}
@@ -246,31 +248,31 @@ export default function CampaignForecasting() {
 
       {/* SDE Explainer Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 backdrop-blur-md relative overflow-hidden">
+        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-indigo-400" /> Linear Regression Model
+            <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-zinc-650" /> Linear Regression Model
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
               We calculate the trend lines using the <strong>Least Squares Method</strong>. This maps historical dates as indexes ($x$) and solves $y = mx + c$ to identify performance trends.
             </p>
-            <div className="bg-slate-950/40 border border-slate-900 p-4 rounded-xl font-mono text-[11px] text-slate-300 space-y-1">
-              <p className="font-semibold text-indigo-400">// Least Squares Formula</p>
+            <div className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-900 p-4 rounded-xl font-mono text-[11px] text-zinc-800 dark:text-zinc-300 space-y-1">
+              <p className="font-semibold text-zinc-500">// Least Squares Formula</p>
               <p>slope (m) = Sum((x - meanX) * (y - meanY)) / Sum((x - meanX)^2)</p>
               <p>intercept (c) = meanY - slope * meanX</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 backdrop-blur-md relative overflow-hidden">
+        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-emerald-400" /> Blended Moving Average
+            <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-emerald-500" /> Blended Moving Average
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
               To account for short-term volume stability and prevent wild trend lines, our forecasting model blends the Linear Regression outputs (70% weight) with a trailing 7-day Simple Moving Average (30% weight).
             </p>
-            <ul className="space-y-1.5 text-xs text-slate-400">
+            <ul className="space-y-1.5 text-xs text-zinc-650 dark:text-zinc-400">
               <li className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
                 <span>Prevents negative predictions on down-trending spend.</span>

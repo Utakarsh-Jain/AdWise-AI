@@ -213,21 +213,21 @@ export default function DashboardOverview() {
   };
 
   return (
-    <div className="space-y-8 z-10 relative">
+    <div className="space-y-6 md:space-y-8 z-10 relative">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight transition-colors">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight transition-colors">
             Dashboard Overview
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-1 transition-colors">
-            Welcome back, <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{user?.name}</span>. Monitor campaign health and optimize spend.
+          <p className="text-sm text-zinc-650 dark:text-zinc-400 mt-1 transition-colors">
+            Welcome back, <span className="text-zinc-900 dark:text-white font-bold">{user?.name}</span>. Monitor campaign health and optimize spend.
           </p>
         </div>
 
         {/* Dynamic CSV Upload Widget */}
-        <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-3 flex items-center gap-4 max-w-sm shrink-0 backdrop-blur-md transition-colors shadow-sm dark:shadow-none">
-          <div className="bg-indigo-100 dark:bg-indigo-600/10 p-2.5 rounded-lg text-indigo-600 dark:text-indigo-400 transition-colors">
+        <div className="bg-white/80 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800/80 rounded-xl p-3 flex items-center gap-4 w-full md:max-w-sm shrink-0 backdrop-blur-md transition-colors shadow-sm dark:shadow-none">
+          <div className="bg-zinc-100 dark:bg-zinc-800 p-2.5 rounded-lg text-zinc-900 dark:text-zinc-100 transition-colors">
             {uploading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
@@ -235,13 +235,13 @@ export default function DashboardOverview() {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors">Import CSV / Excel metrics</h3>
-            <p className="text-[10px] text-slate-500 truncate leading-snug">
+            <h3 className="text-xs font-bold text-zinc-800 dark:text-zinc-200 transition-colors">Import CSV / Excel metrics</h3>
+            <p className="text-[10px] text-zinc-550 dark:text-zinc-400 truncate leading-snug">
               {jobProgressMsg || 'Upload CSV or Excel file...'}
             </p>
           </div>
           <div>
-            <label className="relative flex items-center justify-center px-3 py-1.5 border border-indigo-500/30 hover:border-indigo-500/50 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-lg text-xs font-bold cursor-pointer transition-all">
+            <label className="relative flex items-center justify-center px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-850 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-lg text-xs font-bold cursor-pointer transition-all">
               Choose File
               <input 
                 type="file" 
@@ -277,81 +277,80 @@ export default function DashboardOverview() {
 
       {/* KPI Cards Grid */}
       {loading && !metrics ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {Array.from({ length: 4 }).map((_, idx) => (
-            <div key={idx} className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 h-28 animate-pulse shadow-sm dark:shadow-none transition-colors" />
+            <div key={idx} className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 h-28 animate-pulse shadow-sm dark:shadow-none transition-colors" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Card 1: Total Spend */}
-          <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
+          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
             <div className="flex justify-between items-start">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Ad Spend</span>
-              <div className="bg-emerald-100 dark:bg-emerald-500/10 p-2 rounded-xl text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Total Ad Spend</span>
+              <div className="bg-zinc-100 dark:bg-zinc-850 p-2 rounded-xl text-zinc-900 dark:text-zinc-100 group-hover:scale-110 transition-transform duration-300">
                 <DollarSign className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-3">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 transition-colors">
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 transition-colors">
                 ${metrics?.totalSpend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
               </h2>
-              <p className="text-[10px] text-slate-500 mt-1 font-semibold">Across all campaigns</p>
+              <p className="text-[10px] text-zinc-500 mt-1 font-semibold">Across all campaigns</p>
             </div>
           </div>
 
           {/* Card 2: Total Conversions */}
-          <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
+          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
             <div className="flex justify-between items-start">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Conversions</span>
-              <div className="bg-indigo-100 dark:bg-indigo-500/10 p-2 rounded-xl text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Conversions</span>
+              <div className="bg-zinc-100 dark:bg-zinc-850 p-2 rounded-xl text-zinc-900 dark:text-zinc-100 group-hover:scale-110 transition-transform duration-300">
                 <Target className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-3">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 transition-colors">
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 transition-colors">
                 {metrics?.totalConversions.toLocaleString() || '0'}
               </h2>
-              <p className="text-[10px] text-slate-500 mt-1 font-semibold">
+              <p className="text-[10px] text-zinc-500 mt-1 font-semibold">
                 Avg CV%: {metrics?.avgConversionRate.toFixed(2) || '0.00'}%
               </p>
             </div>
           </div>
 
           {/* Card 3: Cost Per Acquisition */}
-          <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
+          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
             <div className="flex justify-between items-start">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Average CPA</span>
-              <div className="bg-rose-100 dark:bg-rose-500/10 p-2 rounded-xl text-rose-600 dark:text-rose-400 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Average CPA</span>
+              <div className="bg-zinc-100 dark:bg-zinc-850 p-2 rounded-xl text-zinc-900 dark:text-zinc-100 group-hover:scale-110 transition-transform duration-300">
                 <Percent className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-3">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 transition-colors">
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 transition-colors">
                 ${metrics?.avgCpa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
               </h2>
-              <p className="text-[10px] text-slate-500 mt-1 font-semibold">
+              <p className="text-[10px] text-zinc-500 mt-1 font-semibold">
                 Avg CPC: ${metrics?.avgCpc.toFixed(2) || '0.00'}
               </p>
             </div>
           </div>
 
           {/* Card 4: Overall Performance Score */}
-          <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none">
-            {/* Background glow for score */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-600/5 dark:bg-indigo-600/10 rounded-full blur-xl pointer-events-none" />
+          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700/80 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-zinc-650/5 dark:bg-zinc-650/10 rounded-full blur-xl pointer-events-none" />
             <div className="flex justify-between items-start">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Performance Score</span>
-              <div className="bg-purple-100 dark:bg-purple-500/10 p-2 rounded-xl text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform duration-300">
+              <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Performance Score</span>
+              <div className="bg-zinc-100 dark:bg-zinc-850 p-2 rounded-xl text-zinc-900 dark:text-zinc-100 group-hover:scale-110 transition-transform duration-300">
                 <TrendingUp className="w-5 h-5" />
               </div>
             </div>
             <div className="mt-3">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-baseline gap-1 transition-colors">
-                {metrics?.overallScore || '0'}<span className="text-xs text-slate-500">/100</span>
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 flex items-baseline gap-1 transition-colors">
+                {metrics?.overallScore || '0'}<span className="text-xs text-zinc-500">/100</span>
               </h2>
-              <p className="text-[10px] text-slate-500 mt-1 font-semibold flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-indigo-400 animate-pulse" /> Custom Score Algorithm
+              <p className="text-[10px] text-zinc-500 mt-1 font-semibold flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5 text-zinc-500 animate-pulse" /> Custom Score Algorithm
               </p>
             </div>
           </div>
@@ -361,47 +360,47 @@ export default function DashboardOverview() {
       {/* Main Charts & Ingestion Instructions Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Performance Chart Card */}
-        <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 lg:col-span-2 flex flex-col justify-between backdrop-blur-md h-[400px] shadow-sm dark:shadow-none transition-colors">
-          <div className="flex justify-between items-center pb-4 border-b border-slate-200 dark:border-slate-900">
+        <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-4 sm:p-6 lg:col-span-2 flex flex-col justify-between backdrop-blur-md h-[320px] sm:h-[400px] shadow-sm dark:shadow-none transition-colors">
+          <div className="flex justify-between items-center pb-4 border-b border-zinc-200 dark:border-zinc-900">
             <div>
-              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 transition-colors">Daily Metric Overview</h3>
-              <p className="text-[10px] text-slate-500">Trailing 14 days campaign performance</p>
+              <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200 transition-colors">Daily Metric Overview</h3>
+              <p className="text-[10px] text-zinc-550 dark:text-zinc-400">Trailing 14 days campaign performance</p>
             </div>
-            <div className="bg-slate-100 dark:bg-slate-800/50 p-1.5 rounded-lg border border-slate-200 dark:border-slate-700/30 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer transition-colors">
+            <div className="bg-zinc-100 dark:bg-zinc-800/50 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700/30 text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer transition-colors">
               <BarChart2 className="w-4 h-4" />
             </div>
           </div>
 
-          <div className="flex-1 mt-6 text-xs min-h-0">
+          <div className="flex-1 mt-6 text-[10px] sm:text-xs min-h-0">
             {chartData.length === 0 ? (
               <div className="h-full flex flex-col justify-center items-center gap-3">
-                <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-                <span className="text-slate-500 font-medium">Waiting for campaign data...</span>
+                <Loader2 className="w-8 h-8 animate-spin text-zinc-500" />
+                <span className="text-zinc-500 font-medium">Waiting for campaign data...</span>
               </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorSpend" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                      <stop offset="5%" stopColor={theme === 'light' ? '#18181b' : '#ffffff'} stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor={theme === 'light' ? '#18181b' : '#ffffff'} stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="colorConversions" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.15}/>
                       <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke={theme === 'light' ? '#e2e8f0' : '#1e293b'} vertical={false} />
-                  <XAxis dataKey="date" stroke={theme === 'light' ? '#64748b' : '#64748b'} />
-                  <YAxis yAxisId="left" stroke={theme === 'light' ? '#4338ca' : '#4f46e5'} />
-                  <YAxis yAxisId="right" orientation="right" stroke={theme === 'light' ? '#059669' : '#10b981'} />
+                  <XAxis dataKey="date" stroke={theme === 'light' ? '#71717a' : '#a1a1aa'} />
+                  <YAxis yAxisId="left" stroke={theme === 'light' ? '#18181b' : '#f4f4f5'} />
+                  <YAxis yAxisId="right" orientation="right" stroke="#10b981" />
                   <Tooltip 
                     contentStyle={{ 
-                      backgroundColor: theme === 'light' ? '#ffffff' : '#0f172a', 
-                      borderColor: theme === 'light' ? '#e2e8f0' : '#1e293b', 
-                      color: theme === 'light' ? '#1e293b' : '#cbd5e1', 
+                      backgroundColor: theme === 'light' ? '#ffffff' : '#09090b', 
+                      borderColor: theme === 'light' ? '#e4e4e7' : '#27272a', 
+                      color: theme === 'light' ? '#18181b' : '#f4f4f5', 
                       borderRadius: '12px',
-                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)'
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
                     }} 
                   />
                   <Legend verticalAlign="top" height={36} iconType="circle" />
@@ -410,7 +409,7 @@ export default function DashboardOverview() {
                     type="monotone" 
                     dataKey="spend" 
                     name="Spend ($)" 
-                    stroke="#4f46e5" 
+                    stroke={theme === 'light' ? '#18181b' : '#ffffff'} 
                     strokeWidth={2}
                     fillOpacity={1} 
                     fill="url(#colorSpend)" 
@@ -432,37 +431,37 @@ export default function DashboardOverview() {
         </div>
 
         {/* Upload and Ingestion Instructions Card */}
-        <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
+        <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 transition-colors">
-              <UploadCloud className="w-5 h-5 text-indigo-500 dark:text-indigo-400" /> System Guide
+            <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-2 transition-colors">
+              <UploadCloud className="w-5 h-5 text-zinc-800 dark:text-zinc-200" /> System Guide
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed transition-colors">
+            <p className="text-xs text-zinc-650 dark:text-zinc-400 leading-relaxed transition-colors">
               AdWise AI runs offline analytics computations. To test the dashboard features, upload our generated test data file:
             </p>
-            <div className="bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 p-4 rounded-xl space-y-2 transition-colors">
-              <p className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest leading-none">Test Dataset Location</p>
-              <p className="text-xs font-mono text-slate-700 dark:text-slate-200 select-all break-all bg-slate-100 dark:bg-slate-900 p-2 rounded border border-slate-200 dark:border-slate-800 transition-colors">
+            <div className="bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-850 p-4 rounded-xl space-y-2 transition-colors">
+              <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest leading-none">Test Dataset Location</p>
+              <p className="text-xs font-mono text-zinc-700 dark:text-zinc-200 select-all break-all bg-zinc-100 dark:bg-zinc-900 p-2 rounded border border-zinc-200 dark:border-zinc-800 transition-colors">
                 adwise-ai/campaign_data.csv
               </p>
             </div>
-            <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-400 transition-colors">
+            <ul className="space-y-2.5 text-xs text-zinc-650 dark:text-zinc-400 transition-colors">
               <li className="flex items-start gap-2.5">
-                <span className="bg-indigo-100 dark:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">1</span>
+                <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">1</span>
                 <span>Upload the CSV using the <strong>Import CSV</strong> button at the top.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <span className="bg-indigo-100 dark:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">2</span>
+                <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">2</span>
                 <span>The backend processes data on an <strong>asynchronous background worker thread</strong>.</span>
               </li>
               <li className="flex items-start gap-2.5">
-                <span className="bg-indigo-100 dark:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">3</span>
+                <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[10px] mt-0.5">3</span>
                 <span>Once the processing state transitions to completed, page metrics will refresh.</span>
               </li>
             </ul>
           </div>
-          <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-900 flex items-center gap-2 text-[10px] text-slate-500 font-semibold uppercase tracking-wider transition-colors">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-900 flex items-center gap-2 text-[10px] text-zinc-500 font-semibold uppercase tracking-wider transition-colors">
+            <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
             AdWise AI Analytics Suite v1.0
           </div>
         </div>
