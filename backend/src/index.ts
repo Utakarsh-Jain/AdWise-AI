@@ -9,7 +9,7 @@ import fs from 'fs';
 dotenv.config();
 
 // Import controllers and middlewares
-import { signup, login } from './controllers/auth';
+import { signup, login, googleAuth } from './controllers/auth';
 import { uploadCSV, getJobStatus, getCampaigns } from './controllers/campaign';
 import { getAnalyticsData, getOptimizationStrategy } from './controllers/analytics';
 import { getForecastData } from './controllers/forecast';
@@ -76,6 +76,7 @@ const upload = multer({
 // 1. Authentication
 app.post('/api/auth/signup', signup);
 app.post('/api/auth/login', login);
+app.post('/api/auth/google', googleAuth);
 
 // 2. CSV Data Ingestion
 app.post('/api/upload', authenticateJWT, upload.single('file'), uploadCSV);

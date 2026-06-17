@@ -82,6 +82,11 @@ export async function login(req: Request, res: Response) {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
+    // If user signed up via Google and has no password
+    if (!user.password) {
+      return res.status(401).json({ error: 'This account uses Google Sign-In. Please use the Google button to log in.' });
+    }
+
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -107,3 +112,64 @@ export async function login(req: Request, res: Response) {
     return res.status(500).json({ error: 'Server error during login.' });
   }
 }
+
+/**
+ * Handle Google Sign-In / Sign-Up
+ * Receives the Google ID token (credential) from the frontend,
+ * verifies it with Google's tokeninfo API, and upserts the user.
+ */
+export async function googleAuth(req: Request, res: Response) {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({ error: 'Google credential token is required.' });
+    }
+
+    // Verify the Google ID token using Google's tokeninfo endpoint
+    const googleRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`);
+
+    if (!googleRes.ok) {
+      return res.status(401).json({ error: 'Invalid Google credential. Please try again.' });
+    }
+
+    const payload = await googleRes.json() as { email?: string; name?: string; sub?: string };
+    const { email, name, sub: googleId } = payload;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Could not retrieve email from Google account.' });
+    }
+
+    // Upsert: find existing user by email, or create a new one
+    let user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          name: name || email.split('@')[0],
+          email,
+          password: null, // Google-only user, no password
+        },
+      });
+    }
+
+    // Generate local JWT token
+    const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, JWT_SECRET, {
+      expiresIn: '7d',
+    });
+
+    return res.json({
+      message: 'Google authentication successful!',
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error: any) {
+    console.error('Google Auth Error:', error);
+    return res.status(500).json({ error: 'Server error during Google authentication.' });
+  }
+}
+

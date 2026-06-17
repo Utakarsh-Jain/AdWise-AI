@@ -1,16 +1,20 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth, API_BASE_URL } from '../../context/AuthContext';
 import { Sparkles, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+
+// Google Client ID — set in .env.local as NEXT_PUBLIC_GOOGLE_CLIENT_ID
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const router = useRouter();
 
@@ -20,6 +24,69 @@ export default function LoginPage() {
       router.push('/dashboard');
     }
   }, [isAuthenticated, router]);
+
+  // Google credential callback
+  const handleGoogleResponse = useCallback(async (response: any) => {
+    setError(null);
+    setGoogleLoading(true);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: response.credential }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Google authentication failed.');
+      }
+
+      login(data.token, data.user);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Google sign-in failed. Please try again.');
+    } finally {
+      setGoogleLoading(false);
+    }
+  }, [login]);
+
+  // Load & initialize Google Identity Services
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID) return;
+
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      if ((window as any).google) {
+        (window as any).google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleResponse,
+          use_fedcm: false,
+        });
+
+        // Render the official Google Button
+        const buttonDiv = document.getElementById('google-signin-btn');
+        if (buttonDiv) {
+          (window as any).google.accounts.id.renderButton(buttonDiv, {
+            theme: 'outline',
+            size: 'large',
+            width: buttonDiv.clientWidth || 370,
+            text: 'continue_with',
+            shape: 'rectangular',
+          });
+        }
+      }
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [handleGoogleResponse]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +148,25 @@ export default function LoginPage() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10 px-4 sm:px-0">
         <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl py-8 px-4 shadow-lg dark:shadow-2xl border border-slate-200 dark:border-slate-800/80 rounded-2xl sm:px-10 transition-colors">
+          {/* Google Sign-In Button */}
+          {GOOGLE_CLIENT_ID && (
+            <>
+              <div className="flex justify-center w-full min-h-[44px]">
+                <div id="google-signin-btn" className="w-full"></div>
+              </div>
+
+              {/* Divider */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-300 dark:border-slate-700" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-white dark:bg-slate-900 px-4 text-slate-500 dark:text-slate-400">or sign in with email</span>
+                </div>
+              </div>
+            </>
+          )}
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 flex items-start gap-3">
@@ -152,3 +238,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
