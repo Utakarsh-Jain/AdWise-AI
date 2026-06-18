@@ -22,7 +22,7 @@ interface Message {
 }
 
 export default function CampaignChat() {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);

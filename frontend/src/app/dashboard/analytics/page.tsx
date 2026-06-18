@@ -11,16 +11,13 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer, 
-  Legend,
   Cell
 } from 'recharts';
 import { 
-  TrendingUp, 
   Loader2, 
   AlertCircle, 
   ArrowUpRight, 
   ArrowDownRight,
-  TrendingDown,
   Sparkles,
   Zap,
   Globe,

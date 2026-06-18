@@ -17,9 +17,7 @@ import {
   TrendingUp, 
   Loader2, 
   AlertCircle, 
-  Calendar,
   Sparkles,
-  BarChart4,
   LineChart as LineChartIcon,
   FileDown
 } from 'lucide-react';
@@ -32,11 +30,6 @@ interface ForecastPoint {
   actualConversions?: number;
   forecastSpend?: number;
   forecastConversions?: number;
-}
-
-interface ForecastResult {
-  historical: ForecastPoint[];
-  forecast: ForecastPoint[];
 }
 
 export default function CampaignForecasting() {
