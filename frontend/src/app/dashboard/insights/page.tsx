@@ -2,13 +2,16 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth, API_BASE_URL } from '@/context/AuthContext';
-import { Loader2, AlertCircle, Sparkles, Lightbulb, RefreshCw } from 'lucide-react';
+import { Loader2, AlertCircle, Sparkles, Lightbulb, RefreshCw, FileDown } from 'lucide-react';
+import autoTable from 'jspdf-autotable';
+import { createExecutivePdf, addSectionTitle, addWrappedText, stripMarkdown } from '@/utils/pdfReport';
 
 export default function CampaignInsights() {
   const { token } = useAuth();
   const [insights, setInsights] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [exportingReport, setExportingReport] = useState(false);
 
   const fetchInsights = useCallback(async () => {
     if (!token) return;
@@ -113,6 +116,85 @@ export default function CampaignInsights() {
     return parts.length > 0 ? parts : text;
   };
 
+  const handleExportInsightsPdf = async () => {
+    if (!token || !insights) return;
+
+    try {
+      setExportingReport(true);
+
+      // Pull analytics snapshot to make the PDF feel “executive”
+      let snapshot:
+        | {
+            totalSpend: number;
+            totalConversions: number;
+            avgCtr: number;
+            avgCpa: number;
+            overallScore: number;
+          }
+        | null = null;
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/analytics`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          snapshot = {
+            totalSpend: Number(data.totalSpend ?? 0),
+            totalConversions: Number(data.totalConversions ?? 0),
+            avgCtr: Number(data.avgCtr ?? 0),
+            avgCpa: Number(data.avgCpa ?? 0),
+            overallScore: Number(data.overallScore ?? 0),
+          };
+        }
+      } catch {
+        snapshot = null;
+      }
+
+      const { doc, pageWidth, margin, y: startY } = createExecutivePdf(
+        'AdWise AI - Executive Insights Report',
+        'AI recommendations generated from your uploaded campaign performance data.'
+      );
+
+      let y = startY;
+
+      if (snapshot) {
+        addSectionTitle(doc, '1) Executive Snapshot', margin, y);
+        y += 14;
+        autoTable(doc, {
+          startY: y,
+          head: [['Metric', 'Value']],
+          body: [
+            ['Total Spend', `$${snapshot.totalSpend.toFixed(2)}`],
+            ['Total Conversions', `${snapshot.totalConversions}`],
+            ['Average CTR', `${snapshot.avgCtr.toFixed(2)}%`],
+            ['Average CPA', `$${snapshot.avgCpa.toFixed(2)}`],
+            ['Overall Score', `${Math.round(snapshot.overallScore)}/100`],
+          ],
+          theme: 'grid',
+          styles: { fontSize: 9, cellPadding: 6, textColor: [24, 24, 27] },
+          headStyles: { fillColor: [24, 24, 27], textColor: [255, 255, 255] },
+          alternateRowStyles: { fillColor: [250, 250, 250] },
+          margin: { left: margin, right: margin },
+        });
+        y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 24;
+      }
+
+      addSectionTitle(doc, snapshot ? '2) AI Recommendations' : '1) AI Recommendations', margin, y);
+      y += 14;
+      const clean = stripMarkdown(insights);
+      addWrappedText(doc, clean, margin, y, pageWidth - margin * 2, { fontSize: 9.5 });
+
+      const reportDate = new Date().toISOString().slice(0, 10);
+      doc.save(`adwise-ai-insights-report-${reportDate}.pdf`);
+    } catch (e) {
+      console.error(e);
+      setError('Failed to generate insights PDF report. Please try again.');
+    } finally {
+      setExportingReport(false);
+    }
+  };
+
   return (
     <div className="space-y-8 z-10 relative">
       {/* Page Header */}
@@ -126,14 +208,24 @@ export default function CampaignInsights() {
           </p>
         </div>
 
-        <button
-          onClick={fetchInsights}
-          disabled={loading}
-          className="flex items-center gap-2 px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 bg-white/40 dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-xl text-xs font-semibold transition-all self-start"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          Refresh Insights
-        </button>
+        <div className="flex items-center gap-2 self-start">
+          <button
+            onClick={handleExportInsightsPdf}
+            disabled={loading || exportingReport || !insights}
+            className="flex items-center gap-2 px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 bg-white/40 dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-xl text-xs font-semibold transition-all disabled:opacity-60"
+          >
+            {exportingReport ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
+            {exportingReport ? 'Generating PDF...' : 'Export PDF'}
+          </button>
+          <button
+            onClick={fetchInsights}
+            disabled={loading}
+            className="flex items-center gap-2 px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 bg-white/40 dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-xl text-xs font-semibold transition-all"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {loading && !insights ? (

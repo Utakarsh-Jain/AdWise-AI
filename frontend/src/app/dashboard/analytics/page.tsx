@@ -24,8 +24,11 @@ import {
   Sparkles,
   Zap,
   Globe,
-  Video
+  Video,
+  FileDown
 } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -91,6 +94,7 @@ export default function CampaignAnalytics() {
   const [optimization, setOptimization] = useState<OptimizationResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [exportingReport, setExportingReport] = useState(false);
 
   // Fetch campaign analytics and budget optimization data
   const fetchData = useCallback(async () => {
@@ -144,6 +148,201 @@ export default function CampaignAnalytics() {
     return 'text-rose-400 bg-rose-500/10 border-rose-500/20';
   };
 
+  const stripMarkdown = (text: string) => {
+    return text
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .replace(/`(.*?)`/g, '$1')
+      .replace(/^\s*[-*+]\s+/gm, '• ')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  };
+
+  const handleExportExecutivePdf = async () => {
+    if (!token || campaigns.length === 0 || platforms.length === 0) return;
+
+    try {
+      setExportingReport(true);
+
+      let recommendations = 'AI recommendations could not be loaded at export time.';
+      try {
+        const aiRes = await fetch(`${API_BASE_URL}/ai/recommendations`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const aiData = await aiRes.json();
+        if (aiRes.ok && aiData.recommendations) {
+          recommendations = stripMarkdown(aiData.recommendations);
+        }
+      } catch {
+        // Keep graceful fallback text above
+      }
+
+      const totalSpend = campaigns.reduce((sum, c) => sum + c.totalSpend, 0);
+      const totalConversions = campaigns.reduce((sum, c) => sum + c.totalConversions, 0);
+      const totalClicks = campaigns.reduce((sum, c) => sum + c.totalClicks, 0);
+      const totalImpressions = campaigns.reduce((sum, c) => sum + c.totalImpressions, 0);
+      const avgCtr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+      const avgCpa = totalConversions > 0 ? totalSpend / totalConversions : 0;
+      const averageScore =
+        campaigns.length > 0
+          ? campaigns.reduce((sum, c) => sum + c.performanceScore, 0) / campaigns.length
+          : 0;
+
+      const topCampaign = campaigns[0];
+      const bestPlatformByCPA = [...platforms].sort((a, b) => a.cpa - b.cpa)[0];
+      const highestSpendPlatform = [...platforms].sort((a, b) => b.totalSpend - a.totalSpend)[0];
+
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 40;
+      let y = 52;
+
+      doc.setTextColor(24, 24, 27);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(20);
+      doc.text('AdWise AI - Executive Marketing Report', margin, y);
+
+      y += 20;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(82, 82, 91);
+      doc.text(`Generated on ${new Date().toLocaleString()}`, margin, y);
+
+      y += 26;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(24, 24, 27);
+      doc.text('1) Executive Snapshot', margin, y);
+
+      y += 16;
+      autoTable(doc, {
+        startY: y,
+        head: [['Metric', 'Value']],
+        body: [
+          ['Total Spend', `$${totalSpend.toFixed(2)}`],
+          ['Total Conversions', `${totalConversions}`],
+          ['Average CTR', `${avgCtr.toFixed(2)}%`],
+          ['Average CPA', `$${avgCpa.toFixed(2)}`],
+          ['Average Campaign Score', `${Math.round(averageScore)}/100`],
+          ['Top Campaign', topCampaign ? `${topCampaign.campaignName} (${topCampaign.performanceScore}/100)` : 'N/A'],
+          ['Best Platform (Lowest CPA)', bestPlatformByCPA ? `${bestPlatformByCPA.platform} ($${bestPlatformByCPA.cpa.toFixed(2)})` : 'N/A'],
+          ['Highest Spend Platform', highestSpendPlatform ? `${highestSpendPlatform.platform} ($${highestSpendPlatform.totalSpend.toFixed(2)})` : 'N/A'],
+        ],
+        theme: 'grid',
+        styles: { fontSize: 9, cellPadding: 6, textColor: [24, 24, 27] },
+        headStyles: { fillColor: [24, 24, 27], textColor: [255, 255, 255] },
+        alternateRowStyles: { fillColor: [250, 250, 250] },
+        margin: { left: margin, right: margin },
+      });
+
+      y = (doc as any).lastAutoTable.finalY + 24;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text('2) Platform Performance', margin, y);
+
+      autoTable(doc, {
+        startY: y + 10,
+        head: [['Platform', 'Spend Share', 'Spend ($)', 'Conversions', 'CTR %', 'CPC ($)', 'CPA ($)']],
+        body: platforms.map((p) => [
+          p.platform,
+          `${p.shareOfSpend.toFixed(1)}%`,
+          p.totalSpend.toFixed(2),
+          `${p.totalConversions}`,
+          p.ctr.toFixed(2),
+          p.cpc.toFixed(2),
+          p.cpa.toFixed(2),
+        ]),
+        theme: 'striped',
+        styles: { fontSize: 8.5, cellPadding: 5, textColor: [24, 24, 27] },
+        headStyles: { fillColor: [39, 39, 42], textColor: [255, 255, 255] },
+        margin: { left: margin, right: margin },
+      });
+
+      y = (doc as any).lastAutoTable.finalY + 24;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text('3) Campaign Rankings (Top 10)', margin, y);
+
+      autoTable(doc, {
+        startY: y + 10,
+        head: [['Campaign', 'Platform', 'Spend ($)', 'Conversions', 'CTR %', 'CPA ($)', 'Score']],
+        body: campaigns.slice(0, 10).map((c) => [
+          c.campaignName,
+          c.platform,
+          c.totalSpend.toFixed(2),
+          `${c.totalConversions}`,
+          c.ctr.toFixed(2),
+          c.cpa.toFixed(2),
+          `${c.performanceScore}`,
+        ]),
+        theme: 'striped',
+        styles: { fontSize: 8.5, cellPadding: 5, textColor: [24, 24, 27] },
+        headStyles: { fillColor: [39, 39, 42], textColor: [255, 255, 255] },
+        margin: { left: margin, right: margin },
+      });
+
+      if (optimization) {
+        y = (doc as any).lastAutoTable.finalY + 24;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.text('4) Budget Reallocation & Expected Lift', margin, y);
+
+        const liftSummary = [
+          `Projected conversion lift: +${optimization.conversionsLiftPercentage}%`,
+          `Expected conversions: ${optimization.expectedTotalConversionsBefore} -> ${optimization.expectedTotalConversionsAfter}`,
+        ];
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9.5);
+        doc.setTextColor(63, 63, 70);
+        doc.text(liftSummary, margin, y + 14);
+
+        autoTable(doc, {
+          startY: y + 34,
+          head: [['Campaign', 'Current Spend ($)', 'Optimized Spend ($)', 'Change ($)', 'Expected Conv.']],
+          body: optimization.reallocations.slice(0, 10).map((r) => [
+            r.campaignName,
+            r.currentSpend.toFixed(2),
+            r.recommendedSpend.toFixed(2),
+            `${r.changeAmount >= 0 ? '+' : '-'}${Math.abs(r.changeAmount).toFixed(2)}`,
+            `${r.currentConversions} -> ${r.expectedConversions}`,
+          ]),
+          theme: 'striped',
+          styles: { fontSize: 8.5, cellPadding: 5, textColor: [24, 24, 27] },
+          headStyles: { fillColor: [39, 39, 42], textColor: [255, 255, 255] },
+          margin: { left: margin, right: margin },
+        });
+      }
+
+      y = (doc as any).lastAutoTable.finalY + 24;
+      if (y > 660) {
+        doc.addPage();
+        y = 52;
+      }
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(24, 24, 27);
+      doc.text('5) AI Executive Recommendations', margin, y);
+
+      y += 14;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(63, 63, 70);
+      const recommendationText = recommendations.length > 3500 ? `${recommendations.slice(0, 3500)}...` : recommendations;
+      const recommendationLines = doc.splitTextToSize(recommendationText, pageWidth - margin * 2);
+      doc.text(recommendationLines, margin, y + 2);
+
+      const reportDate = new Date().toISOString().slice(0, 10);
+      doc.save(`adwise-executive-report-${reportDate}.pdf`);
+    } catch (err) {
+      console.error(err);
+      setError('Failed to generate executive PDF report. Please try again.');
+    } finally {
+      setExportingReport(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-[60vh] flex flex-col justify-center items-center gap-3">
@@ -170,13 +369,23 @@ export default function CampaignAnalytics() {
   return (
     <div className="space-y-6 md:space-y-8 z-10 relative">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">
-          Campaign Analytics
-        </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-          Detailed platform comparisons and custom algorithmic budget reallocation models.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">
+            Campaign Analytics
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+            Detailed platform comparisons and custom algorithmic budget reallocation models.
+          </p>
+        </div>
+        <button
+          onClick={handleExportExecutivePdf}
+          disabled={exportingReport}
+          className="flex items-center gap-2 px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 bg-white/40 dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-xl text-xs font-semibold transition-all self-start disabled:opacity-60"
+        >
+          {exportingReport ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
+          {exportingReport ? 'Generating PDF...' : 'Export Executive PDF'}
+        </button>
       </div>
 
       {/* Platform Performance Comparison */}

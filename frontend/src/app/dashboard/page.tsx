@@ -11,6 +11,7 @@ import {
   UploadCloud, 
   FileSpreadsheet, 
   Download,
+  FileDown,
   Loader2, 
   AlertCircle, 
   CheckCircle2, 
@@ -27,6 +28,8 @@ import {
   ResponsiveContainer, 
   Legend 
 } from 'recharts';
+import autoTable from 'jspdf-autotable';
+import { createExecutivePdf, addSectionTitle } from '@/utils/pdfReport';
 
 interface AggregatedMetrics {
   totalSpend: number;
@@ -47,6 +50,7 @@ export default function DashboardOverview() {
   const [metrics, setMetrics] = useState<AggregatedMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [exportingReport, setExportingReport] = useState(false);
 
   // CSV Upload States
   const [uploading, setUploading] = useState(false);
@@ -213,6 +217,66 @@ export default function DashboardOverview() {
     }
   };
 
+  const handleExportDashboardPdf = async () => {
+    if (!token || !metrics) return;
+
+    try {
+      setExportingReport(true);
+
+      const { doc, margin, y: startY } = createExecutivePdf(
+        'AdWise AI - Executive Dashboard Report',
+        `User: ${user?.name ?? 'Unknown'}`
+      );
+
+      let y = startY;
+      addSectionTitle(doc, '1) KPI Snapshot', margin, y);
+      y += 14;
+
+      autoTable(doc, {
+        startY: y,
+        head: [['Metric', 'Value']],
+        body: [
+          ['Total Spend', `$${Number(metrics.totalSpend).toFixed(2)}`],
+          ['Total Clicks', `${Number(metrics.totalClicks)}`],
+          ['Total Impressions', `${Number(metrics.totalImpressions)}`],
+          ['Total Conversions', `${Number(metrics.totalConversions)}`],
+          ['Avg CTR', `${Number(metrics.avgCtr).toFixed(2)}%`],
+          ['Avg CPC', `$${Number(metrics.avgCpc).toFixed(2)}`],
+          ['Avg Conversion Rate', `${Number(metrics.avgConversionRate).toFixed(2)}%`],
+          ['Avg CPA', `$${Number(metrics.avgCpa).toFixed(2)}`],
+          ['Overall Score', `${Math.round(Number(metrics.overallScore))}/100`],
+        ],
+        theme: 'grid',
+        styles: { fontSize: 9, cellPadding: 6, textColor: [24, 24, 27] },
+        headStyles: { fillColor: [24, 24, 27], textColor: [255, 255, 255] },
+        alternateRowStyles: { fillColor: [250, 250, 250] },
+        margin: { left: margin, right: margin },
+      });
+
+      y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 24;
+      addSectionTitle(doc, '2) Last 14 Days Overview', margin, y);
+      y += 14;
+
+      autoTable(doc, {
+        startY: y,
+        head: [['Date', 'Spend ($)', 'Conversions', 'Clicks']],
+        body: chartData.map((d) => [String(d.date), Number(d.spend).toFixed(2), `${Number(d.conversions)}`, `${Number(d.clicks)}`]),
+        theme: 'striped',
+        styles: { fontSize: 8.5, cellPadding: 5, textColor: [24, 24, 27] },
+        headStyles: { fillColor: [39, 39, 42], textColor: [255, 255, 255] },
+        margin: { left: margin, right: margin },
+      });
+
+      const reportDate = new Date().toISOString().slice(0, 10);
+      doc.save(`adwise-dashboard-report-${reportDate}.pdf`);
+    } catch (e) {
+      console.error(e);
+      setError('Failed to generate dashboard PDF report. Please try again.');
+    } finally {
+      setExportingReport(false);
+    }
+  };
+
   return (
     <div className="space-y-6 md:space-y-8 z-10 relative">
       {/* Page Header */}
@@ -226,8 +290,18 @@ export default function DashboardOverview() {
           </p>
         </div>
 
-        {/* Dynamic CSV Upload Widget */}
-        <div className="bg-white/80 dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-600 rounded-xl p-3 flex items-center gap-4 w-full md:max-w-sm shrink-0 backdrop-blur-md transition-colors shadow-sm dark:shadow-none">
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <button
+            onClick={handleExportDashboardPdf}
+            disabled={exportingReport || loading || !metrics}
+            className="flex items-center justify-center gap-2 px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 bg-white/40 dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-xl text-xs font-semibold transition-all disabled:opacity-60 shrink-0"
+          >
+            {exportingReport ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
+            {exportingReport ? 'Generating PDF...' : 'Export PDF'}
+          </button>
+
+          {/* Dynamic CSV Upload Widget */}
+          <div className="bg-white/80 dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-600 rounded-xl p-3 flex items-center gap-4 w-full md:max-w-sm shrink-0 backdrop-blur-md transition-colors shadow-sm dark:shadow-none">
           <div className="bg-zinc-100 dark:bg-zinc-800 p-2.5 rounded-lg text-zinc-900 dark:text-zinc-100 transition-colors">
             {uploading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -261,6 +335,7 @@ export default function DashboardOverview() {
                 className="hidden" 
               />
             </label>
+          </div>
           </div>
         </div>
       </div>

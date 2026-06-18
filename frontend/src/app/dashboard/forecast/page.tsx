@@ -20,8 +20,11 @@ import {
   Calendar,
   Sparkles,
   BarChart4,
-  LineChart as LineChartIcon
+  LineChart as LineChartIcon,
+  FileDown
 } from 'lucide-react';
+import autoTable from 'jspdf-autotable';
+import { createExecutivePdf, addSectionTitle } from '@/utils/pdfReport';
 
 interface ForecastPoint {
   date: string;
@@ -44,6 +47,7 @@ export default function CampaignForecasting() {
   const [historicalCount, setHistoricalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [exportingReport, setExportingReport] = useState(false);
 
   // Fetch forecast data from API
   const fetchForecast = useCallback(async () => {
@@ -102,6 +106,47 @@ export default function CampaignForecasting() {
     setForecastDays(days);
   };
 
+  const handleExportForecastPdf = async () => {
+    if (!token || forecastData.length === 0) return;
+
+    try {
+      setExportingReport(true);
+
+      const { doc, margin, y: startY } = createExecutivePdf(
+        'AdWise AI - Executive Forecast Report',
+        `Forecast window: ${forecastDays} days (with ${historicalCount} historical days)`
+      );
+
+      let y = startY;
+      addSectionTitle(doc, '1) Forecast Series (Daily)', margin, y);
+      y += 14;
+
+      autoTable(doc, {
+        startY: y,
+        head: [['Date', 'Actual Spend', 'Actual Conversions', 'Forecast Spend', 'Forecast Conversions']],
+        body: forecastData.map((p) => [
+          new Date(p.date).toISOString().slice(0, 10),
+          p.actualSpend != null ? `$${Number(p.actualSpend).toFixed(2)}` : '',
+          p.actualConversions != null ? `${Number(p.actualConversions)}` : '',
+          p.forecastSpend != null ? `$${Number(p.forecastSpend).toFixed(2)}` : '',
+          p.forecastConversions != null ? `${Number(p.forecastConversions)}` : '',
+        ]),
+        theme: 'striped',
+        styles: { fontSize: 8.5, cellPadding: 5, textColor: [24, 24, 27] },
+        headStyles: { fillColor: [39, 39, 42], textColor: [255, 255, 255] },
+        margin: { left: margin, right: margin },
+      });
+
+      const reportDate = new Date().toISOString().slice(0, 10);
+      doc.save(`adwise-forecast-report-${reportDate}.pdf`);
+    } catch (e) {
+      console.error(e);
+      setError('Failed to generate forecast PDF report. Please try again.');
+    } finally {
+      setExportingReport(false);
+    }
+  };
+
   if (loading && forecastData.length === 0) {
     return (
       <div className="h-[60vh] flex flex-col justify-center items-center gap-3">
@@ -147,21 +192,32 @@ export default function CampaignForecasting() {
           </p>
         </div>
 
-        {/* Period Selector Buttons */}
-        <div className="bg-white dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-600 p-1 rounded-xl flex items-center gap-1 backdrop-blur-md self-start">
-          {[7, 14, 30].map((days) => (
-            <button
-              key={days}
-              onClick={() => handlePeriodChange(days)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${
-                forecastDays === days
-                  ? 'bg-zinc-950 dark:bg-zinc-800 text-white shadow-md'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
-              }`}
-            >
-              {days} Days Out
-            </button>
-          ))}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 self-start">
+          <button
+            onClick={handleExportForecastPdf}
+            disabled={exportingReport}
+            className="flex items-center gap-2 px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 bg-white/40 dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-xl text-xs font-semibold transition-all disabled:opacity-60"
+          >
+            {exportingReport ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
+            {exportingReport ? 'Generating PDF...' : 'Export PDF'}
+          </button>
+
+          {/* Period Selector Buttons */}
+          <div className="bg-white dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-600 p-1 rounded-xl flex items-center gap-1 backdrop-blur-md">
+            {[7, 14, 30].map((days) => (
+              <button
+                key={days}
+                onClick={() => handlePeriodChange(days)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${
+                  forecastDays === days
+                    ? 'bg-zinc-950 dark:bg-zinc-800 text-white shadow-md'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
+                }`}
+              >
+                {days} Days Out
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
