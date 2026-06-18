@@ -23,9 +23,38 @@ export interface ForecastPoint {
 export interface ForecastResult {
   historical: ForecastPoint[];
   forecast: ForecastPoint[];
+  backtest: ForecastBacktest | null;
+}
+
+export interface MetricBacktestScores {
+  mape: number;
+  rmse: number;
+  accuracy: number;
+}
+
+export interface ForecastBacktest {
+  holdoutDays: number;
+  sampleCount: number;
+  overallAccuracy: number;
+  overallMape: number;
+  overallRmse: number;
+  byMetric: Record<MetricKey, MetricBacktestScores>;
 }
 
 type MetricKey = 'spend' | 'clicks' | 'impressions' | 'conversions';
+
+export type { MetricKey };
+
+const FORECAST_FIELD: Record<MetricKey, keyof ForecastPoint> = {
+  spend: 'forecastSpend',
+  clicks: 'forecastClicks',
+  impressions: 'forecastImpressions',
+  conversions: 'forecastConversions',
+};
+
+const MIN_TRAIN_DAYS = 3;
+const MIN_HOLDOUT_DAYS = 2;
+const MAX_HOLDOUT_DAYS = 7;
 
 const METRIC_CONFIG: { key: MetricKey; integer: boolean; decimals?: number }[] = [
   { key: 'spend', integer: false, decimals: 2 },
@@ -208,6 +237,105 @@ function enforceMetricConsistency(values: Record<MetricKey, number>): Record<Met
   return out;
 }
 
+/** Mean Absolute Percentage Error (0–100+). Skips zero actuals. */
+export function calculateMape(actuals: number[], predicted: number[]): number {
+  if (actuals.length === 0) return 0;
+
+  let sum = 0;
+  let count = 0;
+
+  for (let i = 0; i < actuals.length; i++) {
+    const actual = actuals[i];
+    if (actual === 0) continue;
+    sum += Math.abs((actual - predicted[i]) / actual);
+    count++;
+  }
+
+  if (count === 0) return 0;
+  return parseFloat(((sum / count) * 100).toFixed(2));
+}
+
+/** Root Mean Square Error. */
+export function calculateRmse(actuals: number[], predicted: number[]): number {
+  if (actuals.length === 0) return 0;
+
+  const mse =
+    actuals.reduce((acc, actual, i) => acc + Math.pow(actual - predicted[i], 2), 0) /
+    actuals.length;
+
+  return parseFloat(Math.sqrt(mse).toFixed(2));
+}
+
+function accuracyFromMape(mape: number): number {
+  return parseFloat(Math.max(0, Math.min(100, 100 - mape)).toFixed(1));
+}
+
+function resolveHoldoutDays(totalDays: number): number | null {
+  if (totalDays < MIN_TRAIN_DAYS + MIN_HOLDOUT_DAYS) return null;
+
+  const holdout = Math.min(
+    MAX_HOLDOUT_DAYS,
+    Math.max(MIN_HOLDOUT_DAYS, Math.floor(totalDays / 4))
+  );
+
+  if (totalDays - holdout < MIN_TRAIN_DAYS) return null;
+  return holdout;
+}
+
+/**
+ * Hold-out backtest: train on early days, predict the last N days, compare to actuals.
+ */
+export function runForecastBacktest(historicalData: DailyMetric[]): ForecastBacktest | null {
+  const sorted = [...historicalData].sort((a, b) => a.date.localeCompare(b.date));
+  const holdoutDays = resolveHoldoutDays(sorted.length);
+  if (!holdoutDays) return null;
+
+  const train = sorted.slice(0, sorted.length - holdoutDays);
+  const test = sorted.slice(sorted.length - holdoutDays);
+  const { forecastPoints } = generateForecastSeries(train, holdoutDays);
+  const forecast = forecastPoints;
+
+  const byMetric = {} as Record<MetricKey, MetricBacktestScores>;
+  const metricMapes: number[] = [];
+  const metricRmses: number[] = [];
+
+  for (const { key } of METRIC_CONFIG) {
+    const actuals: number[] = [];
+    const predicted: number[] = [];
+
+    for (let i = 0; i < test.length; i++) {
+      const actual = test[i][key];
+      const predPoint = forecast[i];
+      const predictedVal = predPoint?.[FORECAST_FIELD[key]] as number | undefined;
+      if (predictedVal == null) continue;
+      actuals.push(actual);
+      predicted.push(predictedVal);
+    }
+
+    const mape = calculateMape(actuals, predicted);
+    const rmse = calculateRmse(actuals, predicted);
+    byMetric[key] = { mape, rmse, accuracy: accuracyFromMape(mape) };
+    metricMapes.push(mape);
+    metricRmses.push(rmse);
+  }
+
+  const overallMape = parseFloat(
+    (metricMapes.reduce((a, b) => a + b, 0) / metricMapes.length).toFixed(2)
+  );
+  const overallRmse = parseFloat(
+    (metricRmses.reduce((a, b) => a + b, 0) / metricRmses.length).toFixed(2)
+  );
+
+  return {
+    holdoutDays,
+    sampleCount: holdoutDays * METRIC_CONFIG.length,
+    overallAccuracy: accuracyFromMape(overallMape),
+    overallMape,
+    overallRmse,
+    byMetric,
+  };
+}
+
 /**
  * Forecast spend, clicks, impressions, and conversions from daily aggregates.
  * Uses calendar-day regression (handles date gaps), day-of-week seasonality,
@@ -215,13 +343,29 @@ function enforceMetricConsistency(values: Record<MetricKey, number>): Record<Met
  */
 export function buildForecastFromDailyData(
   historicalData: DailyMetric[],
-  daysToForecast = 7
+  daysToForecast = 7,
+  options?: { includeBacktest?: boolean }
 ): ForecastResult {
   if (historicalData.length < 3) {
-    return { historical: [], forecast: [] };
+    return { historical: [], forecast: [], backtest: null };
   }
 
   const sorted = [...historicalData].sort((a, b) => a.date.localeCompare(b.date));
+  const { historicalPoints, forecastPoints } = generateForecastSeries(sorted, daysToForecast);
+  const includeBacktest = options?.includeBacktest !== false;
+  const backtest = includeBacktest ? runForecastBacktest(sorted) : null;
+
+  return {
+    historical: historicalPoints,
+    forecast: forecastPoints,
+    backtest,
+  };
+}
+
+function generateForecastSeries(
+  sorted: DailyMetric[],
+  daysToForecast: number
+): { historicalPoints: ForecastPoint[]; forecastPoints: ForecastPoint[] } {
   const n = sorted.length;
   const lastDateStr = sorted[n - 1].date;
   const lastX = daysBetweenUTC(sorted[0].date, lastDateStr);
@@ -268,8 +412,5 @@ export function buildForecastFromDailyData(
     });
   }
 
-  return {
-    historical: historicalPoints,
-    forecast: forecastPoints,
-  };
+  return { historicalPoints, forecastPoints };
 }

@@ -2,11 +2,14 @@ import {
   addDaysUTC,
   buildForecastFromDailyData,
   calculateLinearRegression,
+  calculateMape,
+  calculateRmse,
   computeDowSeasonalFactors,
   daysBetweenUTC,
   getDayOfWeekUTC,
   isHoliday,
   isUSHoliday,
+  runForecastBacktest,
 } from './forecastMath';
 import { isIndiaHoliday } from './indiaHolidays';
 
@@ -94,6 +97,47 @@ describe('computeDowSeasonalFactors', () => {
   });
 });
 
+describe('calculateMape and calculateRmse', () => {
+  it('computes error metrics correctly', () => {
+    const actuals = [100, 200, 300];
+    const predicted = [110, 190, 330];
+    expect(calculateMape(actuals, predicted)).toBeCloseTo(8.33, 1);
+    expect(calculateRmse(actuals, predicted)).toBeCloseTo(19.15, 1);
+  });
+
+  it('skips zero actuals in MAPE', () => {
+    expect(calculateMape([0, 100], [5, 90])).toBe(10);
+  });
+});
+
+describe('runForecastBacktest', () => {
+  const sampleHistory = [
+    { date: '2026-05-20', spend: 700, clicks: 1100, impressions: 16500, conversions: 70 },
+    { date: '2026-05-21', spend: 720, clicks: 1120, impressions: 16800, conversions: 71 },
+    { date: '2026-05-22', spend: 740, clicks: 1140, impressions: 17100, conversions: 72 },
+    { date: '2026-05-23', spend: 760, clicks: 1160, impressions: 17400, conversions: 73 },
+    { date: '2026-05-24', spend: 780, clicks: 1180, impressions: 17700, conversions: 74 },
+    { date: '2026-05-25', spend: 800, clicks: 1200, impressions: 18000, conversions: 75 },
+    { date: '2026-05-26', spend: 820, clicks: 1220, impressions: 18300, conversions: 76 },
+    { date: '2026-05-27', spend: 840, clicks: 1240, impressions: 18600, conversions: 77 },
+    { date: '2026-05-28', spend: 860, clicks: 1260, impressions: 18900, conversions: 78 },
+  ];
+
+  it('returns null when history is too short', () => {
+    expect(runForecastBacktest(sampleHistory.slice(0, 4))).toBeNull();
+  });
+
+  it('returns accuracy metrics for sufficient history', () => {
+    const result = runForecastBacktest(sampleHistory);
+    expect(result).not.toBeNull();
+    expect(result!.holdoutDays).toBeGreaterThanOrEqual(2);
+    expect(result!.overallAccuracy).toBeGreaterThan(0);
+    expect(result!.overallAccuracy).toBeLessThanOrEqual(100);
+    expect(result!.byMetric.spend.mape).toBeGreaterThanOrEqual(0);
+    expect(result!.byMetric.spend.rmse).toBeGreaterThanOrEqual(0);
+  });
+});
+
 describe('buildForecastFromDailyData', () => {
   const sampleHistory = [
     { date: '2026-05-24', spend: 780.5, clicks: 1200, impressions: 18000, conversions: 75 },
@@ -107,7 +151,25 @@ describe('buildForecastFromDailyData', () => {
     expect(buildForecastFromDailyData(sampleHistory.slice(0, 2), 7)).toEqual({
       historical: [],
       forecast: [],
+      backtest: null,
     });
+  });
+
+  it('includes backtest scores when enough history exists', () => {
+    const extended = [
+      { date: '2026-05-20', spend: 700, clicks: 1100, impressions: 16500, conversions: 70 },
+      { date: '2026-05-21', spend: 720, clicks: 1120, impressions: 16800, conversions: 71 },
+      { date: '2026-05-22', spend: 740, clicks: 1140, impressions: 17100, conversions: 72 },
+      { date: '2026-05-23', spend: 760, clicks: 1160, impressions: 17400, conversions: 73 },
+      { date: '2026-05-24', spend: 780.5, clicks: 1200, impressions: 18000, conversions: 75 },
+      { date: '2026-05-25', spend: 800, clicks: 1250, impressions: 18750, conversions: 75 },
+      { date: '2026-05-26', spend: 776, clicks: 1180, impressions: 17700, conversions: 76 },
+      { date: '2026-05-27', spend: 790, clicks: 1220, impressions: 18300, conversions: 78 },
+      { date: '2026-05-28', spend: 810, clicks: 1280, impressions: 19200, conversions: 80 },
+    ];
+    const result = buildForecastFromDailyData(extended, 7);
+    expect(result.backtest).not.toBeNull();
+    expect(result.backtest!.overallAccuracy).toBeGreaterThan(0);
   });
 
   it('produces the expected number of forecast points', () => {

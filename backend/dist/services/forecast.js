@@ -22,7 +22,7 @@ class ForecastService {
             },
         });
         if (metrics.length === 0) {
-            return { historical: [], forecast: [] };
+            return { historical: [], forecast: [], backtest: null };
         }
         const dailyDataMap = new Map();
         metrics.forEach((m) => {

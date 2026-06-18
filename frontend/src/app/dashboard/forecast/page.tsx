@@ -21,6 +21,7 @@ import {
   Sparkles,
   FileDown,
   Calendar,
+  Target,
 } from 'lucide-react';
 import autoTable from 'jspdf-autotable';
 import { createExecutivePdf, addSectionTitle } from '@/utils/pdfReport';
@@ -38,6 +39,21 @@ interface ForecastPoint {
 }
 
 type MetricKey = 'spend' | 'conversions' | 'clicks' | 'impressions';
+
+interface MetricBacktestScores {
+  mape: number;
+  rmse: number;
+  accuracy: number;
+}
+
+interface ForecastBacktest {
+  holdoutDays: number;
+  sampleCount: number;
+  overallAccuracy: number;
+  overallMape: number;
+  overallRmse: number;
+  byMetric: Record<MetricKey, MetricBacktestScores>;
+}
 
 const METRIC_OPTIONS: {
   key: MetricKey;
@@ -142,6 +158,7 @@ export default function CampaignForecasting() {
   const [error, setError] = useState<string | null>(null);
   const [exportingReport, setExportingReport] = useState(false);
   const [chartReady, setChartReady] = useState(false);
+  const [backtest, setBacktest] = useState<ForecastBacktest | null>(null);
 
   useEffect(() => {
     setChartReady(true);
@@ -163,10 +180,12 @@ export default function CampaignForecasting() {
       const historical = data.historical || [];
       const forecast = data.forecast || [];
       setHistoricalCount(historical.length);
+      setBacktest(data.backtest ?? null);
 
       if (historical.length === 0) {
         setForecastData([]);
         setForecastStartDate(null);
+        setBacktest(null);
         return;
       }
 
@@ -208,6 +227,29 @@ export default function CampaignForecasting() {
       );
 
       let y = startY;
+      if (backtest) {
+        addSectionTitle(doc, 'Model Backtest (Hold-Out)', margin, y);
+        y += 14;
+        autoTable(doc, {
+          startY: y,
+          head: [['Metric', 'Accuracy', 'MAPE', 'RMSE']],
+          body: [
+            ['Overall', `${Math.round(backtest.overallAccuracy)}%`, `${backtest.overallMape}%`, `${backtest.overallRmse}`],
+            ...METRIC_OPTIONS.map((m) => [
+              m.label,
+              `${Math.round(backtest.byMetric[m.key].accuracy)}%`,
+              `${backtest.byMetric[m.key].mape}%`,
+              `${backtest.byMetric[m.key].rmse}`,
+            ]),
+          ],
+          theme: 'striped',
+          styles: { fontSize: 8, cellPadding: 4 },
+          headStyles: { fillColor: [39, 39, 42], textColor: [255, 255, 255] },
+          margin: { left: margin, right: margin },
+        });
+        y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 12;
+      }
+
       addSectionTitle(doc, '1) Forecast Series (Daily)', margin, y);
       y += 14;
 
@@ -283,6 +325,18 @@ export default function CampaignForecasting() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 shrink-0">
+          {backtest && (
+            <div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60"
+              title={`Hold-out backtest on last ${backtest.holdoutDays} days · MAPE ${backtest.overallMape}% · RMSE ${backtest.overallRmse}`}
+            >
+              <Target className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                Model accuracy: {Math.round(backtest.overallAccuracy)}%
+              </span>
+            </div>
+          )}
+
           <button
             onClick={handleExportForecastPdf}
             disabled={exportingReport}
@@ -356,7 +410,34 @@ export default function CampaignForecasting() {
           {forecastStartDate && (
             <> · forecast starts after {formatChartDate(forecastStartDate)}</>
           )}
+          {backtest && (
+            <> · backtested on last {backtest.holdoutDays} days (MAPE {backtest.overallMape}%)</>
+          )}
         </p>
+
+        {backtest && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+            {METRIC_OPTIONS.map((m) => {
+              const scores = backtest.byMetric[m.key];
+              const active = activeMetric === m.key;
+              return (
+                <div
+                  key={m.key}
+                  className={`rounded-lg border px-2.5 py-2 text-[10px] ${
+                    active
+                      ? 'border-zinc-400 dark:border-zinc-500 bg-zinc-50 dark:bg-zinc-800/60'
+                      : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/30'
+                  }`}
+                >
+                  <p className="font-semibold text-zinc-700 dark:text-zinc-300">{m.label}</p>
+                  <p className="text-zinc-500 dark:text-zinc-400">
+                    {Math.round(scores.accuracy)}% · MAPE {scores.mape}%
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         <div className="w-full min-w-0 mt-2">
           {chartReady && forecastData.length > 0 ? (
@@ -466,10 +547,11 @@ export default function CampaignForecasting() {
 
         <div className="bg-white dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-5">
           <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200 flex items-center gap-2 mb-2">
-            <TrendingUp className="w-4 h-4 text-blue-500" /> Full Funnel
+            <Target className="w-4 h-4 text-emerald-500" /> Hold-Out Backtesting
           </h3>
           <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            Spend, clicks, impressions, and conversions all use the same model. Switch metrics above — one chart, two lines, no clutter.
+            We hide the last N days, retrain the model, and compare predictions to actuals using{' '}
+            <strong>MAPE</strong> and <strong>RMSE</strong>. Accuracy = 100% − MAPE — so you know how reliable projections are.
           </p>
         </div>
       </div>
