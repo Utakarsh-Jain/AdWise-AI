@@ -17,6 +17,7 @@ import {
   Sparkles,
   Sun,
   Moon,
+  SlidersHorizontal,
   Menu,
   X
 } from 'lucide-react';
@@ -30,6 +31,7 @@ export default function Sidebar() {
   const menuItems = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Campaign Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+    { name: 'Budget Reallocator', href: '/dashboard/reallocator', icon: SlidersHorizontal },
     { name: 'Forecasting', href: '/dashboard/forecast', icon: TrendingUp },
     { name: 'AI Insights', href: '/dashboard/insights', icon: Lightbulb },
     { name: 'AI Chat Analyst', href: '/dashboard/chat', icon: MessageSquare },
