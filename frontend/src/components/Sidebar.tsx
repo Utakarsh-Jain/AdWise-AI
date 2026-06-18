@@ -19,7 +19,8 @@ import {
   Moon,
   SlidersHorizontal,
   Menu,
-  X
+  X,
+  Bell
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -33,6 +34,7 @@ export default function Sidebar() {
     { name: 'Campaign Analytics', href: '/dashboard/analytics', icon: BarChart3 },
     { name: 'Budget Reallocator', href: '/dashboard/reallocator', icon: SlidersHorizontal },
     { name: 'Forecasting', href: '/dashboard/forecast', icon: TrendingUp },
+    { name: 'Anomaly Alerts', href: '/dashboard/alerts', icon: Bell },
     { name: 'AI Insights', href: '/dashboard/insights', icon: Lightbulb },
     { name: 'AI Chat Analyst', href: '/dashboard/chat', icon: MessageSquare },
     { name: 'AI Ad Generator', href: '/dashboard/ad-generator', icon: Sparkles },

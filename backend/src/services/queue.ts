@@ -112,6 +112,12 @@ export class QueueService {
         where: { userId }
       }).catch(() => {});
 
+      // Run anomaly scan + optional Slack/email alerts after fresh data ingest
+      const { AnomalyService } = await import('./anomaly');
+      AnomalyService.scanUserCampaigns(userId, true).catch((err) => {
+        console.error(`Anomaly scan failed for user ${userId}:`, err);
+      });
+
       // 4. Mark job as COMPLETED
       await prisma.job.update({
         where: { id: jobId },

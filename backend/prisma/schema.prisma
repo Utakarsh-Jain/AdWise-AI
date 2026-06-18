@@ -18,6 +18,8 @@ model User {
   reports        Report[]
   socialAccounts SocialAccount[]
   posts          Post[]
+  alertSettings  AlertSettings?
+  anomalyAlerts  AnomalyAlert[]
 }
 
 model Campaign {
@@ -118,5 +120,43 @@ model PostFeatures {
   postingDay    Int    // 0-6 (Sunday-Saturday)
   topic         String // AI, Startup, Tech, Marketing, etc.
   post          Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model AlertSettings {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  enabled         Boolean  @default(true)
+  slackWebhookUrl String?
+  emailAlerts     Boolean  @default(true)
+  zScoreThreshold Float    @default(2.0)
+  lookbackDays    Int      @default(14)
+  cpaEnabled      Boolean  @default(true)
+  ctrEnabled      Boolean  @default(true)
+  spendEnabled    Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AnomalyAlert {
+  id             String   @id @default(uuid())
+  userId         String
+  campaignId     String?
+  campaignName   String
+  platform       String
+  date           String
+  metric         String
+  severity       String
+  currentValue   Float
+  baselineValue  Float
+  zScore         Float
+  percentChange  Float
+  message        String
+  notified       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, campaignId, metric, date])
 }
 

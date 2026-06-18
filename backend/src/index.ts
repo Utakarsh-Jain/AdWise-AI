@@ -13,6 +13,7 @@ import { signup, login, googleAuth } from './controllers/auth';
 import { uploadCSV, getJobStatus, getCampaigns } from './controllers/campaign';
 import { getAnalyticsData, getOptimizationStrategy } from './controllers/analytics';
 import { getForecastData } from './controllers/forecast';
+import { getAnomalyAlerts, scanAnomalies, updateAlertSettings, testAlertNotification } from './controllers/anomaly';
 import { getAiRecommendations, postChat } from './controllers/chat';
 import { authenticateJWT } from './middleware/auth';
 
@@ -89,6 +90,12 @@ app.get('/api/budget-optimization', authenticateJWT, getOptimizationStrategy);
 
 // 4. Projections & Forecasting
 app.get('/api/forecast', authenticateJWT, getForecastData);
+
+// 4b. Anomaly detection & alerts
+app.get('/api/anomalies', authenticateJWT, getAnomalyAlerts);
+app.post('/api/anomalies/scan', authenticateJWT, scanAnomalies);
+app.put('/api/anomalies/settings', authenticateJWT, updateAlertSettings);
+app.post('/api/anomalies/test', authenticateJWT, testAlertNotification);
 
 // 5. Gen AI Assistance
 app.get('/api/ai/recommendations', authenticateJWT, getAiRecommendations);

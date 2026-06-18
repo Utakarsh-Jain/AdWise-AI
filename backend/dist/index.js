@@ -16,6 +16,7 @@ const auth_1 = require("./controllers/auth");
 const campaign_1 = require("./controllers/campaign");
 const analytics_1 = require("./controllers/analytics");
 const forecast_1 = require("./controllers/forecast");
+const anomaly_1 = require("./controllers/anomaly");
 const chat_1 = require("./controllers/chat");
 const auth_2 = require("./middleware/auth");
 // Social integration controllers & scheduler
@@ -78,6 +79,11 @@ app.get('/api/analytics', auth_2.authenticateJWT, analytics_1.getAnalyticsData);
 app.get('/api/budget-optimization', auth_2.authenticateJWT, analytics_1.getOptimizationStrategy);
 // 4. Projections & Forecasting
 app.get('/api/forecast', auth_2.authenticateJWT, forecast_1.getForecastData);
+// 4b. Anomaly detection & alerts
+app.get('/api/anomalies', auth_2.authenticateJWT, anomaly_1.getAnomalyAlerts);
+app.post('/api/anomalies/scan', auth_2.authenticateJWT, anomaly_1.scanAnomalies);
+app.put('/api/anomalies/settings', auth_2.authenticateJWT, anomaly_1.updateAlertSettings);
+app.post('/api/anomalies/test', auth_2.authenticateJWT, anomaly_1.testAlertNotification);
 // 5. Gen AI Assistance
 app.get('/api/ai/recommendations', auth_2.authenticateJWT, chat_1.getAiRecommendations);
 app.post('/api/ai/chat', auth_2.authenticateJWT, chat_1.postChat);
