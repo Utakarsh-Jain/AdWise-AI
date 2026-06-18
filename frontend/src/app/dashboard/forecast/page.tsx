@@ -141,6 +141,11 @@ export default function CampaignForecasting() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [exportingReport, setExportingReport] = useState(false);
+  const [chartReady, setChartReady] = useState(false);
+
+  useEffect(() => {
+    setChartReady(true);
+  }, []);
 
   const fetchForecast = useCallback(async () => {
     if (!token) return;
@@ -353,8 +358,9 @@ export default function CampaignForecasting() {
           )}
         </p>
 
-        <div className="h-[340px] sm:h-[420px] mt-2">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="w-full min-w-0 mt-2">
+          {chartReady && forecastData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={420} minWidth={0} debounce={50}>
             <LineChart
               data={forecastData}
               margin={{ top: 16, right: 16, left: 4, bottom: 8 }}
@@ -430,6 +436,11 @@ export default function CampaignForecasting() {
               />
             </LineChart>
           </ResponsiveContainer>
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <Loader2 className="w-6 h-6 animate-spin text-zinc-400" />
+            </div>
+          )}
         </div>
       </div>
 
