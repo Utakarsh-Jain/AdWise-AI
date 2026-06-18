@@ -1,9 +1,9 @@
 export type ChannelId = 'google' | 'facebook' | 'tiktok';
 
-export const CHANNELS: { id: ChannelId; label: string; color: string }[] = [
-  { id: 'google', label: 'Google Ads', color: '#4285F4' },
-  { id: 'facebook', label: 'Facebook / Meta', color: '#1877F2' },
-  { id: 'tiktok', label: 'TikTok', color: '#FE2C55' },
+export const CHANNELS: { id: ChannelId; label: string; color: string; colorDark: string }[] = [
+  { id: 'google', label: 'Google Ads', color: '#18181b', colorDark: '#fafafa' },
+  { id: 'facebook', label: 'Facebook / Meta', color: '#52525b', colorDark: '#e4e4e7' },
+  { id: 'tiktok', label: 'TikTok', color: '#a1a1aa', colorDark: '#a1a1aa' },
 ];
 
 export interface ChannelBaseline {

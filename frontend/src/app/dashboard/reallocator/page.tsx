@@ -5,7 +5,6 @@ import { useAuth, API_BASE_URL } from '@/context/AuthContext';
 import {
   Loader2,
   AlertCircle,
-  SlidersHorizontal,
   RotateCcw,
   TrendingUp,
   DollarSign,
@@ -137,11 +136,10 @@ export default function BudgetReallocatorPage() {
     <div className="space-y-6 md:space-y-8 z-10 relative">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
-            <SlidersHorizontal className="w-7 h-7" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight transition-colors">
             ROI & Budget Reallocator
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-2xl">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1 max-w-2xl transition-colors">
             Drag sliders to shift spend between Google Ads, Facebook, and TikTok. Conversions, CPA, and ROI update in real time using each channel&apos;s historical efficiency.
           </p>
         </div>
@@ -155,7 +153,7 @@ export default function BudgetReallocatorPage() {
       </div>
 
       {/* Live KPI strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           {
             label: 'Projected Conversions',
@@ -188,29 +186,36 @@ export default function BudgetReallocatorPage() {
         ].map((card) => (
           <div
             key={card.label}
-            className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 backdrop-blur-md shadow-sm dark:shadow-none transition-all duration-300 hover:border-zinc-400 dark:hover:border-zinc-500"
+            className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none"
           >
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">{card.label}</span>
-              <card.icon className="w-4 h-4 text-zinc-400" />
+              <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">{card.label}</span>
+              <div className="bg-zinc-100 dark:bg-zinc-800 p-2 rounded-xl text-zinc-900 dark:text-zinc-100 group-hover:scale-110 transition-transform duration-300">
+                <card.icon className="w-5 h-5" />
+              </div>
             </div>
-            <p className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mt-2 tabular-nums">{card.value}</p>
-            <p
-              className={`text-[10px] font-semibold mt-1 ${
-                card.positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'
-              }`}
-            >
-              {card.delta}
-            </p>
+            <div className="mt-3">
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 tabular-nums transition-colors">{card.value}</h2>
+              <p
+                className={`text-[10px] mt-1 font-semibold ${
+                  card.positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'
+                }`}
+              >
+                {card.delta}
+              </p>
+            </div>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Sliders panel */}
-        <div className="lg:col-span-5 bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-5 sm:p-6 backdrop-blur-md shadow-sm dark:shadow-none space-y-6">
+        <div className="lg:col-span-5 bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 backdrop-blur-md shadow-sm dark:shadow-none transition-colors space-y-6">
           <div className="flex items-center justify-between pb-4 border-b border-zinc-300 dark:border-zinc-600">
-            <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200">Channel Allocation</h3>
+            <div>
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200">Channel Allocation</h3>
+              <p className="text-[10px] text-zinc-500">Drag to simulate budget shifts</p>
+            </div>
             <span className="text-[10px] font-bold text-zinc-500 tabular-nums">
               {(shares.google + shares.facebook + shares.tiktok).toFixed(0)}% total
             </span>
@@ -222,7 +227,6 @@ export default function BudgetReallocatorPage() {
                 key={ch.id}
                 id={ch.id}
                 label={ch.label}
-                color={ch.color}
                 value={shares[ch.id]}
                 spend={simulated.channelSpend[ch.id]}
                 onChange={handleSliderChange}
@@ -242,7 +246,7 @@ export default function BudgetReallocatorPage() {
               step={5}
               value={conversionValue}
               onChange={(e) => setConversionValue(Math.max(10, Number(e.target.value) || 85))}
-              className="w-full text-sm rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-3 py-2 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10"
+              className="w-full text-sm rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-3 py-2 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600 transition-all"
             />
             <p className="text-[10px] text-zinc-500 flex items-center gap-1">
               <Sparkles className="w-3 h-3" />
@@ -254,7 +258,7 @@ export default function BudgetReallocatorPage() {
             {CHANNELS.map((ch) => (
               <div
                 key={ch.id}
-                className="bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-300 dark:border-zinc-600 rounded-xl p-2.5"
+                className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-300 dark:border-zinc-600 rounded-xl p-2.5 transition-colors"
               >
                 <p className="text-[9px] text-zinc-500 uppercase font-bold">{ch.label.split(' ')[0]}</p>
                 <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 tabular-nums mt-0.5">
@@ -269,10 +273,10 @@ export default function BudgetReallocatorPage() {
         </div>
 
         {/* Charts panel */}
-        <div className="lg:col-span-7 bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-5 sm:p-6 backdrop-blur-md shadow-sm dark:shadow-none">
+        <div className="lg:col-span-7 bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
           <div className="pb-4 border-b border-zinc-300 dark:border-zinc-600 mb-6">
             <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200">Live Simulation Charts</h3>
-            <p className="text-[10px] text-zinc-500 mt-0.5">SVG visuals update as you drag each slider</p>
+            <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Budget mix and performance comparison</p>
           </div>
           <ReallocatorCharts baseline={baseline} simulated={simulated} />
         </div>

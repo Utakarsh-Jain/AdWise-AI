@@ -68,6 +68,7 @@ const upload = (0, multer_1.default)({
 // 1. Authentication
 app.post('/api/auth/signup', auth_1.signup);
 app.post('/api/auth/login', auth_1.login);
+app.post('/api/auth/google', auth_1.googleAuth);
 // 2. CSV Data Ingestion
 app.post('/api/upload', auth_2.authenticateJWT, upload.single('file'), campaign_1.uploadCSV);
 app.get('/api/jobs/:jobId', auth_2.authenticateJWT, campaign_1.getJobStatus);
