@@ -97,7 +97,7 @@ export default function LoginPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(228,228,231,0.6),transparent_70%)] dark:bg-[radial-gradient(circle_at_center,rgba(39,39,42,0.6),transparent_70%)] pointer-events-none" />
 
       {/* Main Card Container */}
-      <div className="w-full max-w-4xl min-h-[580px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-3xl overflow-hidden shadow-xl dark:shadow-none flex flex-col md:flex-row relative z-10">
+      <div className="w-full max-w-4xl min-h-[580px] bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-600 rounded-3xl overflow-hidden shadow-xl dark:shadow-none flex flex-col md:flex-row relative z-10">
         
         {/* Left Side: Brand Panel (Hidden on mobile for layout optimization) */}
         <div className="hidden md:flex md:w-[42%] bg-zinc-950 text-white p-10 flex-col justify-between relative overflow-hidden border-r border-zinc-900 shrink-0">
@@ -198,7 +198,7 @@ export default function LoginPage() {
                   </div>
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-zinc-200 dark:border-zinc-700" />
+                      <div className="w-full border-t border-zinc-300 dark:border-zinc-600" />
                     </div>
                     <div className="relative flex justify-center text-[10px]">
                       <span className="bg-white dark:bg-zinc-900 px-3 text-zinc-400 dark:text-zinc-500 uppercase font-bold tracking-wider">or</span>
@@ -224,7 +224,7 @@ export default function LoginPage() {
                     id="email" name="email" type="email" autoComplete="email" required
                     value={email} onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="block w-full px-3 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600 transition-all"
+                    className="block w-full px-3 py-2 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600 transition-all"
                   />
                 </div>
 
@@ -236,7 +236,7 @@ export default function LoginPage() {
                     id="password" name="password" type="password" autoComplete="current-password" required
                     value={password} onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="block w-full px-3 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600 transition-all"
+                    className="block w-full px-3 py-2 rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600 transition-all"
                   />
                 </div>
 

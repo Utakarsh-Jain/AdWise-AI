@@ -146,38 +146,38 @@ export default function AdGenerator() {
   };
 
   return (
-    <div className="space-y-8 z-10 relative">
+    <div className="space-y-6 md:space-y-8 z-10 relative">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2.5 transition-colors">
-            <Sparkles className="w-8 h-8 text-indigo-500 animate-pulse" /> AI Ad Copywriter
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2 transition-colors">
+            <Sparkles className="w-6 h-6 text-zinc-900 dark:text-zinc-100" /> AI Ad Copywriter
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-1 transition-colors text-sm">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1 transition-colors">
             Generate high-converting ad copy dynamically powered by Gemini AI and preview them live in social feed templates.
           </p>
         </div>
         <button
           onClick={handlePreFill}
-          className="self-start md:self-center text-xs font-semibold px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-slate-700 dark:text-slate-300 rounded-xl transition-all border border-slate-200 dark:border-zinc-700"
+          className="self-start md:self-center flex items-center gap-2 px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 bg-white/40 dark:bg-zinc-900/40 hover:bg-zinc-50 dark:hover:bg-zinc-900/80 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-xl text-xs font-semibold transition-all"
         >
           Try Demo Product
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Side - Controls Form */}
-        <div className="lg:col-span-5 bg-white dark:bg-zinc-900/40 border border-slate-200 dark:border-zinc-700 rounded-3xl p-6 shadow-md dark:shadow-none space-y-6">
-          <div className="flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-zinc-800">
-            <Megaphone className="w-5 h-5 text-indigo-500" />
-            <h3 className="font-bold text-slate-800 dark:text-slate-200">Creative Setup</h3>
+        <div className="lg:col-span-5 bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 shadow-sm dark:shadow-none backdrop-blur-md transition-colors space-y-6">
+          <div className="flex items-center gap-2 pb-4 border-b border-zinc-300 dark:border-zinc-600">
+            <Megaphone className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+            <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Creative Setup</h3>
           </div>
 
           <form onSubmit={handleGenerate} className="space-y-5">
             {/* Platform Tab Selector */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Target Platform</label>
-              <div className="grid grid-cols-3 gap-2 bg-slate-100 dark:bg-zinc-950 p-1.5 rounded-2xl border border-slate-200/50 dark:border-zinc-800">
+              <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">Target Platform</label>
+              <div className="grid grid-cols-3 gap-2 bg-zinc-100 dark:bg-zinc-950 p-1.5 rounded-2xl border border-zinc-300/60 dark:border-zinc-600">
                 {(['meta', 'google', 'linkedin'] as const).map((p) => (
                   <button
                     key={p}
@@ -185,8 +185,8 @@ export default function AdGenerator() {
                     onClick={() => setPlatform(p)}
                     className={`py-2 px-3 text-xs font-bold rounded-xl transition-all capitalize ${
                       platform === p
-                        ? 'bg-white dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                        ? 'bg-zinc-950 dark:bg-zinc-800 text-white shadow-sm'
+                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
                     }`}
                   >
                     {p === 'meta' ? 'Meta' : p}
@@ -197,7 +197,7 @@ export default function AdGenerator() {
 
             {/* Product description */}
             <div className="space-y-1.5">
-              <label htmlFor="description" className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+              <label htmlFor="description" className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">
                 Product/Service Description
               </label>
               <textarea
@@ -207,13 +207,13 @@ export default function AdGenerator() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe what you are advertising, key features, and core offer..."
-                className="w-full text-sm rounded-2xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 px-4 py-3 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-500/50 transition-all resize-none"
+                className="w-full text-sm rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600 transition-all resize-none"
               />
             </div>
 
             {/* Target Audience */}
             <div className="space-y-1.5">
-              <label htmlFor="audience" className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+              <label htmlFor="audience" className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">
                 Target Audience
               </label>
               <input
@@ -223,13 +223,13 @@ export default function AdGenerator() {
                 value={audience}
                 onChange={(e) => setAudience(e.target.value)}
                 placeholder="E.g., Young professionals, busy parents, remote workers"
-                className="w-full text-sm rounded-2xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 px-4 py-3 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full text-sm rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600 transition-all"
               />
             </div>
 
             {/* Keywords */}
             <div className="space-y-1.5">
-              <label htmlFor="keywords" className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+              <label htmlFor="keywords" className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">
                 Keywords & Brand Tone (Optional)
               </label>
               <input
@@ -238,7 +238,7 @@ export default function AdGenerator() {
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
                 placeholder="E.g., premium, energetic, limited discount, friendly"
-                className="w-full text-sm rounded-2xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 px-4 py-3 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full text-sm rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-4 py-3 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600 transition-all"
               />
             </div>
 
@@ -251,7 +251,7 @@ export default function AdGenerator() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-indigo-600 hover:bg-indigo-600 active:bg-indigo-700 disabled:opacity-70 text-white rounded-2xl text-sm font-bold transition-all shadow-lg shadow-indigo-600/25 hover:shadow-indigo-500/30"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-zinc-950 hover:bg-black active:bg-zinc-900 dark:bg-zinc-100 dark:hover:bg-white dark:text-zinc-950 disabled:opacity-70 text-white rounded-xl text-sm font-bold transition-all"
             >
               {loading ? (
                 <>
@@ -269,26 +269,26 @@ export default function AdGenerator() {
         </div>
 
         {/* Right Side - Previews Screen */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 shadow-sm dark:shadow-none backdrop-blur-md transition-colors space-y-6">
           
           {/* Top Bar Navigation for Preview Simulator */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200/60 dark:border-zinc-700 pb-3 gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-300 dark:border-zinc-600 pb-4 gap-3">
             <div className="flex items-center gap-2">
-              <Eye className="w-5 h-5 text-indigo-500" />
-              <h3 className="font-bold text-slate-800 dark:text-slate-200">Interactive Mockup Preview</h3>
+              <Eye className="w-5 h-5 text-zinc-900 dark:text-zinc-100" />
+              <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Interactive Mockup Preview</h3>
             </div>
             
             {/* Platform Tab Selectors */}
             {generatedAd && (
-              <div className="flex bg-slate-100 dark:bg-zinc-900 p-1 rounded-xl border border-slate-200/50 dark:border-zinc-700">
+              <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl border border-zinc-300/60 dark:border-zinc-600">
                 {(['facebook', 'instagram', 'google', 'linkedin'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setPreviewPlatform(tab)}
                     className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all capitalize ${
                       previewPlatform === tab
-                        ? 'bg-white dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                        ? 'bg-zinc-950 dark:bg-zinc-800 text-white shadow-sm'
+                        : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200'
                     }`}
                   >
                     {tab === 'facebook' ? 'Facebook' : tab === 'instagram' ? 'Instagram' : tab === 'google' ? 'Google' : 'LinkedIn'}
@@ -299,21 +299,21 @@ export default function AdGenerator() {
           </div>
 
           {!generatedAd && !loading ? (
-            <div className="bg-slate-50 dark:bg-zinc-950/20 border-2 border-dashed border-slate-200 dark:border-zinc-700 rounded-3xl p-12 text-center space-y-3 flex flex-col items-center justify-center min-h-[460px]">
-              <div className="p-4 rounded-full bg-slate-100 dark:bg-zinc-900 text-slate-400">
+            <div className="bg-zinc-50/80 dark:bg-zinc-950/20 border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-2xl p-12 text-center space-y-3 flex flex-col items-center justify-center min-h-[460px]">
+              <div className="p-4 rounded-full bg-zinc-100 dark:bg-zinc-900 text-zinc-400">
                 <Megaphone className="w-8 h-8" />
               </div>
-              <h4 className="font-bold text-slate-700 dark:text-slate-300">No Ad Copy Generated Yet</h4>
-              <p className="text-xs text-slate-500 max-w-sm">
+              <h4 className="font-bold text-zinc-700 dark:text-zinc-300">No Ad Copy Generated Yet</h4>
+              <p className="text-xs text-zinc-500 max-w-sm">
                 Fill out the configuration form on the left and click "Generate Ad Copy" to launch our copywriting engine.
               </p>
             </div>
           ) : loading ? (
-            <div className="bg-slate-50 dark:bg-zinc-950/20 border-2 border-dashed border-slate-200 dark:border-zinc-700 rounded-3xl p-12 text-center space-y-4 flex flex-col items-center justify-center min-h-[460px] animate-pulse">
-              <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+            <div className="bg-zinc-50/80 dark:bg-zinc-950/20 border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-2xl p-12 text-center space-y-4 flex flex-col items-center justify-center min-h-[460px] animate-pulse">
+              <Loader2 className="w-8 h-8 text-zinc-600 dark:text-zinc-400 animate-spin" />
               <div className="space-y-1">
-                <h4 className="font-bold text-slate-700 dark:text-slate-300">Writing copies with Gemini...</h4>
-                <p className="text-xs text-slate-500">Creating high-converting headlines and descriptors.</p>
+                <h4 className="font-bold text-zinc-700 dark:text-zinc-300">Writing copies with Gemini...</h4>
+                <p className="text-xs text-zinc-500">Creating high-converting headlines and descriptors.</p>
               </div>
             </div>
           ) : (
@@ -325,22 +325,22 @@ export default function AdGenerator() {
                 {/* Simulator Toolbar Controls */}
                 <div className="w-full max-w-[340px] flex items-center justify-between mb-3 px-2">
                   <div className="flex items-center gap-1.5">
-                    <Smartphone className="w-3.5 h-3.5 text-slate-400" />
-                    <span className="text-[11px] text-slate-400 dark:text-slate-400 font-bold uppercase tracking-wider">Ad Simulator</span>
+                    <Smartphone className="w-3.5 h-3.5 text-zinc-400" />
+                    <span className="text-[11px] text-zinc-400 dark:text-zinc-400 font-bold uppercase tracking-wider">Ad Simulator</span>
                   </div>
                   
                   {/* Light/Dark mode for phone screen */}
-                  <div className="flex items-center bg-slate-100 dark:bg-zinc-900 rounded-lg p-0.5 border border-slate-200/50 dark:border-zinc-700">
+                  <div className="flex items-center bg-zinc-100 dark:bg-zinc-900 rounded-lg p-0.5 border border-zinc-300/60 dark:border-zinc-600">
                     <button
                       onClick={() => setSimulatorTheme('light')}
-                      className={`p-1 rounded-md transition-colors ${simulatorTheme === 'light' ? 'bg-white dark:bg-zinc-800 text-indigo-500 shadow-sm' : 'text-slate-400'}`}
+                      className={`p-1 rounded-md transition-colors ${simulatorTheme === 'light' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm' : 'text-zinc-400'}`}
                       title="Light Mode Preview"
                     >
                       <Sun className="w-3 h-3" />
                     </button>
                     <button
                       onClick={() => setSimulatorTheme('dark')}
-                      className={`p-1 rounded-md transition-colors ${simulatorTheme === 'dark' ? 'bg-white dark:bg-zinc-800 text-indigo-400 shadow-sm' : 'text-slate-400'}`}
+                      className={`p-1 rounded-md transition-colors ${simulatorTheme === 'dark' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm' : 'text-zinc-400'}`}
                       title="Dark Mode Preview"
                     >
                       <Moon className="w-3 h-3" />
@@ -349,7 +349,7 @@ export default function AdGenerator() {
                 </div>
 
                 {/* iPhone Body */}
-                <div className="relative w-full max-w-[340px] aspect-[9/18.5] bg-zinc-900 dark:bg-black rounded-[48px] shadow-2xl border-[11px] border-zinc-950 p-2 overflow-hidden flex flex-col transition-all duration-300 ring-4 ring-slate-100 dark:ring-zinc-900/30">
+                <div className="relative w-full max-w-[340px] aspect-[9/18.5] bg-zinc-900 dark:bg-black rounded-[48px] shadow-2xl border-[11px] border-zinc-950 p-2 overflow-hidden flex flex-col transition-all duration-300 ring-4 ring-zinc-100 dark:ring-zinc-900/30">
                   
                   {/* Dynamic Apple Dynamic Island / Speaker notch */}
                   <div className="absolute top-3.5 left-1/2 -translate-x-1/2 w-28 h-5.5 bg-black rounded-full z-30 flex items-center justify-end px-3">
@@ -360,7 +360,7 @@ export default function AdGenerator() {
                   {/* Simulator Screen */}
                   <div className={`h-full w-full rounded-[38px] overflow-hidden flex flex-col relative select-none border border-zinc-800/20 ${
                     simulatorTheme === 'light' 
-                      ? 'bg-slate-50 text-zinc-900' 
+                      ? 'bg-zinc-50 text-zinc-900' 
                       : 'bg-zinc-950 text-zinc-100'
                   }`}>
                     
@@ -393,7 +393,7 @@ export default function AdGenerator() {
                       {previewPlatform === 'facebook' && (
                         <div className={`rounded-2xl border transition-all ${
                           simulatorTheme === 'light' 
-                            ? 'bg-white border-zinc-200/80 shadow-sm text-zinc-900' 
+                            ? 'bg-white border-zinc-300/80 shadow-sm text-zinc-900' 
                             : 'bg-zinc-900 border-zinc-800 text-zinc-100'
                         } overflow-hidden`}>
                           
@@ -427,7 +427,7 @@ export default function AdGenerator() {
                           {/* Ad Visual Graphic Attachment */}
                           <div className={`aspect-[1.91/1] border-y flex flex-col items-center justify-center p-4 text-center space-y-1 relative ${
                             simulatorTheme === 'light'
-                              ? 'bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5 border-zinc-200/50'
+                              ? 'bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5 border-zinc-300/60'
                               : 'bg-gradient-to-br from-indigo-500/10 via-purple-500/15 to-pink-500/10 border-zinc-800'
                           }`}>
                             <Megaphone className="w-8 h-8 text-indigo-500/55 animate-bounce" style={{ animationDuration: '4s' }} />
@@ -466,7 +466,7 @@ export default function AdGenerator() {
 
                           {/* Social Actions */}
                           <div className={`px-3.5 py-2.5 border-t flex items-center justify-between text-[10px] ${
-                            simulatorTheme === 'light' ? 'border-zinc-200 text-zinc-500' : 'border-zinc-800 text-zinc-400'
+                            simulatorTheme === 'light' ? 'border-zinc-300 text-zinc-500' : 'border-zinc-800 text-zinc-400'
                           }`}>
                             <div className="flex items-center gap-1 font-medium">
                               <ThumbsUp className="w-3.5 h-3.5 text-blue-500" />
@@ -485,7 +485,7 @@ export default function AdGenerator() {
                       {previewPlatform === 'instagram' && (
                         <div className={`rounded-2xl border transition-all ${
                           simulatorTheme === 'light' 
-                            ? 'bg-white border-zinc-200/80 shadow-sm text-zinc-900' 
+                            ? 'bg-white border-zinc-300/80 shadow-sm text-zinc-900' 
                             : 'bg-zinc-900 border-zinc-800 text-zinc-100'
                         } overflow-hidden`}>
                           
@@ -494,7 +494,7 @@ export default function AdGenerator() {
                             <div className="flex items-center gap-2.5">
                               <div className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600">
                                 <div className={`w-full h-full rounded-full flex items-center justify-center font-bold text-xs p-1 ${
-                                  simulatorTheme === 'light' ? 'bg-white text-slate-800' : 'bg-zinc-900 text-slate-100'
+                                  simulatorTheme === 'light' ? 'bg-white text-zinc-800' : 'bg-zinc-900 text-zinc-100'
                                 }`}>
                                   AW
                                 </div>
@@ -514,7 +514,7 @@ export default function AdGenerator() {
                           {/* Visual Media Box */}
                           <div className={`aspect-square border-y flex flex-col items-center justify-center p-6 text-center space-y-1.5 relative ${
                             simulatorTheme === 'light'
-                              ? 'bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5 border-zinc-200/50'
+                              ? 'bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5 border-zinc-300/60'
                               : 'bg-gradient-to-br from-indigo-500/10 via-purple-500/15 to-pink-500/10 border-zinc-800'
                           }`}>
                             <div className="absolute top-3 right-3 bg-zinc-950/60 text-[8px] font-bold text-white px-2 py-0.5 rounded-full">
@@ -565,14 +565,14 @@ export default function AdGenerator() {
                       {previewPlatform === 'google' && (
                         <div className={`p-4 rounded-2xl border transition-all space-y-2.5 ${
                           simulatorTheme === 'light' 
-                            ? 'bg-white border-zinc-200/80 shadow-sm text-zinc-900' 
+                            ? 'bg-white border-zinc-300/80 shadow-sm text-zinc-900' 
                             : 'bg-zinc-900 border-zinc-800 text-zinc-100'
                         }`}>
                           
                           {/* Search Header Branding */}
                           <div className="flex items-center gap-2">
                             <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold ${
-                              simulatorTheme === 'light' ? 'bg-slate-100 text-zinc-500' : 'bg-zinc-800 text-zinc-400'
+                              simulatorTheme === 'light' ? 'bg-zinc-100 text-zinc-500' : 'bg-zinc-800 text-zinc-400'
                             }`}>
                               G
                             </div>
@@ -583,7 +583,7 @@ export default function AdGenerator() {
                               <div className="flex items-center gap-1 mt-0.5">
                                 <span className={`text-[7.5px] font-extrabold px-1 py-0.1 rounded border ${
                                   simulatorTheme === 'light'
-                                    ? 'text-zinc-800 bg-slate-100 border-zinc-200/60'
+                                    ? 'text-zinc-800 bg-zinc-100 border-zinc-300/60'
                                     : 'text-white bg-zinc-800 border-zinc-700'
                                 }`}>Sponsored</span>
                               </div>
@@ -603,7 +603,7 @@ export default function AdGenerator() {
                           }`}>
                             <span className={`font-bold uppercase text-[8.5px] border-r pr-1.5 mr-1.5 ${
                               simulatorTheme === 'light'
-                                ? 'text-zinc-800 border-zinc-200'
+                                ? 'text-zinc-800 border-zinc-300'
                                 : 'text-zinc-200 border-zinc-800'
                             }`}>{liveCta || 'Learn More'}</span>
                             {livePrimaryText || 'Create high-converting campaigns.'}
@@ -615,7 +615,7 @@ export default function AdGenerator() {
                       {previewPlatform === 'linkedin' && (
                         <div className={`rounded-2xl border transition-all ${
                           simulatorTheme === 'light' 
-                            ? 'bg-white border-zinc-200/80 shadow-sm text-zinc-900' 
+                            ? 'bg-white border-zinc-300/80 shadow-sm text-zinc-900' 
                             : 'bg-zinc-900 border-zinc-800 text-zinc-100'
                         } overflow-hidden`}>
                           
@@ -650,7 +650,7 @@ export default function AdGenerator() {
                           {/* LinkedIn Card Attachment */}
                           <div className={`border mx-3.5 mb-3 rounded-xl overflow-hidden ${
                             simulatorTheme === 'light'
-                              ? 'border-zinc-200 bg-slate-50/50'
+                              ? 'border-zinc-300 bg-zinc-50/50'
                               : 'border-zinc-800 bg-zinc-950/30'
                           }`}>
                             <div className="aspect-[1.91/1] bg-gradient-to-br from-indigo-500/10 to-blue-500/15 flex items-center justify-center p-4 text-center">
@@ -658,7 +658,7 @@ export default function AdGenerator() {
                             </div>
                             
                             <div className={`p-3 border-t flex justify-between items-center gap-3 ${
-                              simulatorTheme === 'light' ? 'border-zinc-200' : 'border-zinc-800'
+                              simulatorTheme === 'light' ? 'border-zinc-300' : 'border-zinc-800'
                             }`}>
                               <div className="min-w-0 flex-1">
                                 <h6 className="text-[10.5px] font-bold truncate">
@@ -683,7 +683,7 @@ export default function AdGenerator() {
                           {/* Bottom Stats Tray */}
                           <div className={`px-3.5 py-2.5 border-t flex items-center justify-between text-[9px] ${
                             simulatorTheme === 'light'
-                              ? 'border-zinc-200 text-zinc-500'
+                              ? 'border-zinc-300 text-zinc-500'
                               : 'border-zinc-800 text-zinc-400'
                           }`}>
                             <span>👍 42 Likes</span>
@@ -708,11 +708,11 @@ export default function AdGenerator() {
               <div className="md:col-span-5 space-y-5">
                 
                 {/* Live Customizer Card Wrapper */}
-                <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-3xl p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-700">
+                <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-5 shadow-sm dark:shadow-none backdrop-blur-md transition-colors space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-zinc-300 dark:border-zinc-600">
                     <div className="flex items-center gap-2">
-                      <Edit3 className="w-4 h-4 text-indigo-500" />
-                      <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">Copy Adjuster</h4>
+                      <Edit3 className="w-4 h-4 text-zinc-900 dark:text-zinc-100" />
+                      <h4 className="text-xs font-bold text-zinc-800 dark:text-zinc-200">Copy Adjuster</h4>
                     </div>
                     
                     {/* Live Customizer Switch Button */}
@@ -720,8 +720,8 @@ export default function AdGenerator() {
                       onClick={() => setIsEditingLive(!isEditingLive)}
                       className={`text-[10px] font-bold px-3 py-1.5 rounded-lg border transition-all ${
                         isEditingLive 
-                          ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 border-indigo-200' 
-                          : 'bg-slate-50 dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100'
+                          ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border-zinc-300 dark:border-zinc-600' 
+                          : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100'
                       }`}
                     >
                       {isEditingLive ? 'Lock & Save' : 'Edit Copy Live'}
@@ -731,32 +731,32 @@ export default function AdGenerator() {
                   {isEditingLive ? (
                     <div className="space-y-3">
                       <div>
-                        <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Headline</label>
+                        <label className="text-[10px] font-bold text-zinc-500 uppercase block mb-1">Headline</label>
                         <input
                           type="text"
                           value={liveHeadline}
                           onChange={(e) => setLiveHeadline(e.target.value)}
-                          className="w-full text-xs rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 px-3 py-2 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          className="w-full text-xs rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-3 py-2 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Primary Text</label>
+                        <label className="text-[10px] font-bold text-zinc-500 uppercase block mb-1">Primary Text</label>
                         <textarea
                           rows={4}
                           value={livePrimaryText}
                           onChange={(e) => setLivePrimaryText(e.target.value)}
-                          className="w-full text-xs rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 px-3 py-2 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+                          className="w-full text-xs rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-3 py-2 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600 resize-none"
                         />
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">CTA Action</label>
+                          <label className="text-[10px] font-bold text-zinc-500 uppercase block mb-1">CTA Action</label>
                           <select
                             value={liveCta}
                             onChange={(e) => setLiveCta(e.target.value)}
-                            className="w-full text-xs rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            className="w-full text-xs rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-3 py-2 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600"
                           >
                             <option value="Learn More">Learn More</option>
                             <option value="Sign Up">Sign Up</option>
@@ -767,12 +767,12 @@ export default function AdGenerator() {
                           </select>
                         </div>
                         <div>
-                          <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Description</label>
+                          <label className="text-[10px] font-bold text-zinc-500 uppercase block mb-1">Description</label>
                           <input
                             type="text"
                             value={liveDescription}
                             onChange={(e) => setLiveDescription(e.target.value)}
-                            className="w-full text-xs rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-950 px-3 py-2 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            className="w-full text-xs rounded-xl border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-3 py-2 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950/20 dark:focus:ring-white/10 focus:border-zinc-900 dark:focus:border-zinc-600"
                           />
                         </div>
                       </div>
@@ -780,23 +780,23 @@ export default function AdGenerator() {
                   ) : (
                     <div className="space-y-4">
                       <div>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Headline</span>
-                        <p className="text-xs text-slate-800 dark:text-slate-200 font-bold leading-tight">{liveHeadline}</p>
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest block mb-0.5">Headline</span>
+                        <p className="text-xs text-zinc-800 dark:text-zinc-200 font-bold leading-tight">{liveHeadline}</p>
                       </div>
 
                       <div>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Primary Text</span>
-                        <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{livePrimaryText}</p>
+                        <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest block mb-0.5">Primary Text</span>
+                        <p className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">{livePrimaryText}</p>
                       </div>
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">CTA</span>
-                          <p className="text-xs text-slate-800 dark:text-slate-200 font-semibold">{liveCta}</p>
+                          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest block mb-0.5">CTA</span>
+                          <p className="text-xs text-zinc-800 dark:text-zinc-200 font-semibold">{liveCta}</p>
                         </div>
                         <div>
-                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Sub-Description</span>
-                          <p className="text-xs text-slate-800 dark:text-slate-200 font-semibold">{liveDescription}</p>
+                          <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest block mb-0.5">Sub-Description</span>
+                          <p className="text-xs text-zinc-800 dark:text-zinc-200 font-semibold">{liveDescription}</p>
                         </div>
                       </div>
                     </div>
@@ -804,13 +804,13 @@ export default function AdGenerator() {
                 </div>
 
                 {/* Copy Utilities Card */}
-                <div className="bg-slate-50 dark:bg-zinc-900/40 border border-slate-200 dark:border-zinc-700 rounded-3xl p-5 space-y-3.5">
-                  <h4 className="text-xs font-bold text-slate-800 dark:text-zinc-300">Copy Actions</h4>
+                <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-5 shadow-sm dark:shadow-none backdrop-blur-md transition-colors space-y-3.5">
+                  <h4 className="text-xs font-bold text-zinc-800 dark:text-zinc-300">Copy Actions</h4>
                   
                   <div className="flex flex-col gap-2">
                     <button
                       onClick={() => copyToClipboard(liveHeadline, 'headline')}
-                      className="flex items-center justify-between py-2.5 px-3 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 transition-all shadow-sm"
+                      className="flex items-center justify-between py-2.5 px-3 bg-white/80 dark:bg-zinc-900/70 border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-xl text-xs font-bold text-zinc-800 dark:text-zinc-200 transition-all shadow-sm"
                     >
                       <span className="flex items-center gap-2">
                         {copiedHeadline ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -821,7 +821,7 @@ export default function AdGenerator() {
                     
                     <button
                       onClick={() => copyToClipboard(livePrimaryText, 'body')}
-                      className="flex items-center justify-between py-2.5 px-3 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 transition-all shadow-sm"
+                      className="flex items-center justify-between py-2.5 px-3 bg-white/80 dark:bg-zinc-900/70 border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-xl text-xs font-bold text-zinc-800 dark:text-zinc-200 transition-all shadow-sm"
                     >
                       <span className="flex items-center gap-2">
                         {copiedBody ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -832,7 +832,7 @@ export default function AdGenerator() {
 
                     <button
                       onClick={() => copyToClipboard('', 'all')}
-                      className="flex items-center justify-between py-2.5 px-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm shadow-indigo-600/10"
+                      className="flex items-center justify-between py-2.5 px-3 bg-zinc-950 hover:bg-black dark:bg-zinc-100 dark:hover:bg-white dark:text-zinc-950 text-white rounded-xl text-xs font-bold transition-all shadow-sm"
                     >
                       <span className="flex items-center gap-2">
                         {copiedAll ? <CheckCircle className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5" />}

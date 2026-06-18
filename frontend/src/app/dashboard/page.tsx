@@ -227,7 +227,7 @@ export default function DashboardOverview() {
         </div>
 
         {/* Dynamic CSV Upload Widget */}
-        <div className="bg-white/80 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 flex items-center gap-4 w-full md:max-w-sm shrink-0 backdrop-blur-md transition-colors shadow-sm dark:shadow-none">
+        <div className="bg-white/80 dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-600 rounded-xl p-3 flex items-center gap-4 w-full md:max-w-sm shrink-0 backdrop-blur-md transition-colors shadow-sm dark:shadow-none">
           <div className="bg-zinc-100 dark:bg-zinc-800 p-2.5 rounded-lg text-zinc-900 dark:text-zinc-100 transition-colors">
             {uploading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -245,13 +245,13 @@ export default function DashboardOverview() {
             <a
               href="/campaign_metrics_template.csv"
               download="campaign_metrics_template.csv"
-              className="flex items-center justify-center gap-1 px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-lg text-xs font-bold transition-all"
+              className="flex items-center justify-center gap-1 px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-lg text-xs font-bold transition-all"
               title="Download CSV template with required columns"
             >
               <Download className="w-3.5 h-3.5" />
               Template
             </a>
-            <label className="relative flex items-center justify-center px-3 py-1.5 border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-lg text-xs font-bold cursor-pointer transition-all">
+            <label className="relative flex items-center justify-center px-3 py-1.5 border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-lg text-xs font-bold cursor-pointer transition-all">
               Choose File
               <input 
                 type="file" 
@@ -289,13 +289,13 @@ export default function DashboardOverview() {
       {loading && !metrics ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {Array.from({ length: 4 }).map((_, idx) => (
-            <div key={idx} className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-6 h-28 animate-pulse shadow-sm dark:shadow-none transition-colors" />
+            <div key={idx} className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-6 h-28 animate-pulse shadow-sm dark:shadow-none transition-colors" />
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Card 1: Total Spend */}
-          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
+          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
             <div className="flex justify-between items-start">
               <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Total Ad Spend</span>
               <div className="bg-zinc-100 dark:bg-zinc-800 p-2 rounded-xl text-zinc-900 dark:text-zinc-100 group-hover:scale-110 transition-transform duration-300">
@@ -311,7 +311,7 @@ export default function DashboardOverview() {
           </div>
 
           {/* Card 2: Total Conversions */}
-          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
+          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
             <div className="flex justify-between items-start">
               <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Conversions</span>
               <div className="bg-zinc-100 dark:bg-zinc-800 p-2 rounded-xl text-zinc-900 dark:text-zinc-100 group-hover:scale-110 transition-transform duration-300">
@@ -329,7 +329,7 @@ export default function DashboardOverview() {
           </div>
 
           {/* Card 3: Cost Per Acquisition */}
-          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
+          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md shadow-sm dark:shadow-none">
             <div className="flex justify-between items-start">
               <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Average CPA</span>
               <div className="bg-zinc-100 dark:bg-zinc-800 p-2 rounded-xl text-zinc-900 dark:text-zinc-100 group-hover:scale-110 transition-transform duration-300">
@@ -347,7 +347,7 @@ export default function DashboardOverview() {
           </div>
 
           {/* Card 4: Overall Performance Score */}
-          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none">
+          <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 hover:border-zinc-300 dark:hover:border-zinc-500 rounded-2xl p-6 transition-all duration-300 group hover:translate-y-[-2px] backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none">
             <div className="absolute top-0 right-0 w-24 h-24 bg-zinc-600/5 dark:bg-zinc-600/10 rounded-full blur-xl pointer-events-none" />
             <div className="flex justify-between items-start">
               <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Performance Score</span>
@@ -370,13 +370,13 @@ export default function DashboardOverview() {
       {/* Main Charts & Ingestion Instructions Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Performance Chart Card */}
-        <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-4 sm:p-6 lg:col-span-2 flex flex-col justify-between backdrop-blur-md h-[320px] sm:h-[400px] shadow-sm dark:shadow-none transition-colors">
-          <div className="flex justify-between items-center pb-4 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 lg:col-span-2 flex flex-col justify-between backdrop-blur-md h-[320px] sm:h-[400px] shadow-sm dark:shadow-none transition-colors">
+          <div className="flex justify-between items-center pb-4 border-b border-zinc-300 dark:border-zinc-600">
             <div>
               <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200 transition-colors">Daily Metric Overview</h3>
               <p className="text-[10px] text-zinc-500 dark:text-zinc-400">Trailing 14 days campaign performance</p>
             </div>
-            <div className="bg-zinc-100 dark:bg-zinc-800/50 p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700/30 text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer transition-colors">
+            <div className="bg-zinc-100 dark:bg-zinc-800/50 p-1.5 rounded-lg border border-zinc-300 dark:border-zinc-600/50 text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 cursor-pointer transition-colors">
               <BarChart2 className="w-4 h-4" />
             </div>
           </div>
@@ -441,7 +441,7 @@ export default function DashboardOverview() {
         </div>
 
         {/* Upload and Ingestion Instructions Card */}
-        <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
+        <div className="bg-white/80 dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-2 transition-colors">
               <UploadCloud className="w-5 h-5 text-zinc-800 dark:text-zinc-200" /> System Guide
@@ -449,9 +449,9 @@ export default function DashboardOverview() {
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed transition-colors">
               Download the CSV template, fill in your campaign metrics, then upload the file to populate analytics.
             </p>
-            <div className="bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-700 p-4 rounded-xl space-y-2 transition-colors">
+            <div className="bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-300 dark:border-zinc-600 p-4 rounded-xl space-y-2 transition-colors">
               <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest leading-none">Required columns</p>
-              <p className="text-xs font-mono text-zinc-700 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-900 p-2 rounded border border-zinc-200 dark:border-zinc-700 transition-colors">
+              <p className="text-xs font-mono text-zinc-700 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-900 p-2 rounded border border-zinc-300 dark:border-zinc-600 transition-colors">
                 Date, Campaign, Platform, Spend, Clicks, Impressions, Conversions
               </p>
             </div>
@@ -474,7 +474,7 @@ export default function DashboardOverview() {
               </li>
             </ul>
           </div>
-          <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center gap-2 text-[10px] text-zinc-500 font-semibold uppercase tracking-wider transition-colors">
+          <div className="mt-6 pt-4 border-t border-zinc-300 dark:border-zinc-600 flex items-center gap-2 text-[10px] text-zinc-500 font-semibold uppercase tracking-wider transition-colors">
             <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
             AdWise AI Analytics Suite v1.0
           </div>

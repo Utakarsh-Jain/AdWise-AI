@@ -156,7 +156,7 @@ export default function CampaignAnalytics() {
   if (error || campaigns.length === 0) {
     return (
       <div className="h-[60vh] flex flex-col justify-center items-center text-center max-w-md mx-auto space-y-4 px-4">
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 p-4 rounded-full text-zinc-900 dark:text-zinc-100 shadow-xl shadow-zinc-500/5">
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-600 p-4 rounded-full text-zinc-900 dark:text-zinc-100 shadow-xl shadow-zinc-500/5">
           <AlertCircle className="w-10 h-10" />
         </div>
         <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">No Analytics Available</h2>
@@ -182,8 +182,8 @@ export default function CampaignAnalytics() {
       {/* Platform Performance Comparison */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Table summary of Platforms */}
-        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-4 sm:p-6 lg:col-span-2 flex flex-col justify-between backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
-          <div className="pb-4 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 lg:col-span-2 flex flex-col justify-between backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
+          <div className="pb-4 border-b border-zinc-300 dark:border-zinc-600">
             <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200">Platform Performance Shares</h3>
             <p className="text-[10px] text-zinc-500">Aggregated spend, CPA, and ROI comparison</p>
           </div>
@@ -191,7 +191,7 @@ export default function CampaignAnalytics() {
             <div className="inline-block min-w-full align-middle px-4 sm:px-0">
               <table className="min-w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-500 font-bold uppercase tracking-wider text-[10px]">
+                  <tr className="border-b border-zinc-300 dark:border-zinc-600 text-zinc-500 dark:text-zinc-500 font-bold uppercase tracking-wider text-[10px]">
                     <th className="py-3 px-2">Platform</th>
                     <th className="py-3 px-2 text-right">Spend Share</th>
                     <th className="py-3 px-2 text-right">Conversions</th>
@@ -223,8 +223,8 @@ export default function CampaignAnalytics() {
         </div>
 
         {/* Platform Share of Voice Bar Chart */}
-        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md h-[270px] sm:h-[320px] lg:h-auto shadow-sm dark:shadow-none transition-colors">
-          <div className="pb-4 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md h-[270px] sm:h-[320px] lg:h-auto shadow-sm dark:shadow-none transition-colors">
+          <div className="pb-4 border-b border-zinc-300 dark:border-zinc-600">
             <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200">CPA Comparison</h3>
             <p className="text-[10px] text-zinc-500">Lower Cost Per Acquisition is superior</p>
           </div>
@@ -258,8 +258,8 @@ export default function CampaignAnalytics() {
       </div>
 
       {/* Campaign Efficiency Rankings */}
-      <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-4 sm:p-6 backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
-        <div className="pb-4 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="bg-white dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
+        <div className="pb-4 border-b border-zinc-300 dark:border-zinc-600">
           <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200">Campaign Performance & Rankings</h3>
           <p className="text-[10px] text-zinc-500">Ranked by our proprietary, balanced performance scoring algorithm</p>
         </div>
@@ -267,7 +267,7 @@ export default function CampaignAnalytics() {
           <div className="inline-block min-w-full align-middle px-4 sm:px-0">
             <table className="min-w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-500 font-bold uppercase tracking-wider text-[10px]">
+                <tr className="border-b border-zinc-300 dark:border-zinc-600 text-zinc-500 dark:text-zinc-500 font-bold uppercase tracking-wider text-[10px]">
                   <th className="py-3 px-2">Campaign Name</th>
                   <th className="py-3 px-2">Platform</th>
                   <th className="py-3 px-2 text-right">Spend</th>
@@ -305,7 +305,7 @@ export default function CampaignAnalytics() {
       {optimization && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Summary Stats */}
-          <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
+          <div className="bg-white dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-600/10 rounded-full blur-2xl pointer-events-none" />
             <div className="space-y-4">
               <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
@@ -322,24 +322,24 @@ export default function CampaignAnalytics() {
               </p>
               
               <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl">
+                <div className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-300 dark:border-zinc-600 p-3 rounded-xl">
                   <p className="text-[10px] text-zinc-500 font-semibold uppercase">Current Leads</p>
                   <p className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mt-0.5">{optimization.expectedTotalConversionsBefore}</p>
                 </div>
-                <div className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl border-l-2 border-l-emerald-500">
+                <div className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-300 dark:border-zinc-600 p-3 rounded-xl border-l-2 border-l-emerald-500">
                   <p className="text-[10px] text-zinc-500 font-semibold uppercase">Optimized Leads</p>
                   <p className="text-lg font-bold text-emerald-500 mt-0.5">{optimization.expectedTotalConversionsAfter}</p>
                 </div>
               </div>
             </div>
-            <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 text-[10px] text-zinc-500 font-semibold uppercase">
+            <div className="mt-6 pt-4 border-t border-zinc-300 dark:border-zinc-600 text-[10px] text-zinc-500 font-semibold uppercase">
               *Net-Neutral Budget (No extra cost)
             </div>
           </div>
 
           {/* Reallocations Grid */}
-          <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-4 sm:p-6 lg:col-span-2 flex flex-col justify-between backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
-            <div className="pb-4 border-b border-zinc-200 dark:border-zinc-800">
+          <div className="bg-white dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 lg:col-span-2 flex flex-col justify-between backdrop-blur-md shadow-sm dark:shadow-none transition-colors">
+            <div className="pb-4 border-b border-zinc-300 dark:border-zinc-600">
               <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200">Reallocation Suggestions</h3>
               <p className="text-[10px] text-zinc-500">Recommended budget changes and expected performance shift</p>
             </div>
@@ -347,7 +347,7 @@ export default function CampaignAnalytics() {
               <div className="inline-block min-w-full align-middle px-4 sm:px-0">
                 <table className="min-w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-500 font-bold uppercase tracking-wider text-[10px]">
+                    <tr className="border-b border-zinc-300 dark:border-zinc-600 text-zinc-500 dark:text-zinc-500 font-bold uppercase tracking-wider text-[10px]">
                       <th className="py-3 px-2">Campaign</th>
                       <th className="py-3 px-2 text-right">Current Spend</th>
                       <th className="py-3 px-2 text-right">Optimized Spend</th>

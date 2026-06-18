@@ -114,7 +114,7 @@ export default function CampaignForecasting() {
   if (error || forecastData.length === 0) {
     return (
       <div className="h-[60vh] flex flex-col justify-center items-center text-center max-w-md mx-auto space-y-4 px-4">
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 p-4 rounded-full text-zinc-900 dark:text-zinc-100 shadow-xl shadow-zinc-500/5">
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-600 p-4 rounded-full text-zinc-900 dark:text-zinc-100 shadow-xl shadow-zinc-500/5">
           <AlertCircle className="w-10 h-10" />
         </div>
         <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">No Forecasting Available</h2>
@@ -148,7 +148,7 @@ export default function CampaignForecasting() {
         </div>
 
         {/* Period Selector Buttons */}
-        <div className="bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-700 p-1 rounded-xl flex items-center gap-1 backdrop-blur-md self-start">
+        <div className="bg-white dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-600 p-1 rounded-xl flex items-center gap-1 backdrop-blur-md self-start">
           {[7, 14, 30].map((days) => (
             <button
               key={days}
@@ -166,15 +166,15 @@ export default function CampaignForecasting() {
       </div>
 
       {/* Main Projections LineChart */}
-      <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md h-[320px] sm:h-[450px] shadow-sm dark:shadow-none transition-colors">
-        <div className="flex justify-between items-center pb-4 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="bg-white dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-4 sm:p-6 flex flex-col justify-between backdrop-blur-md h-[320px] sm:h-[450px] shadow-sm dark:shadow-none transition-colors">
+        <div className="flex justify-between items-center pb-4 border-b border-zinc-300 dark:border-zinc-600">
           <div>
             <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200">Spend & Conversions Projections</h3>
             <p className="text-[10px] text-zinc-500">
               Showing {historicalCount} historical days + {forecastDays} projected days (dashed lines)
             </p>
           </div>
-          <div className="bg-zinc-100 dark:bg-zinc-800/50 p-1.5 rounded-lg border border-zinc-200/30 dark:border-zinc-700/30 text-zinc-500 dark:text-zinc-400">
+          <div className="bg-zinc-100 dark:bg-zinc-800/50 p-1.5 rounded-lg border border-zinc-300/40 dark:border-zinc-600/50 text-zinc-500 dark:text-zinc-400">
             <LineChartIcon className="w-4 h-4" />
           </div>
         </div>
@@ -248,7 +248,7 @@ export default function CampaignForecasting() {
 
       {/* SDE Explainer Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-6 backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
+        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-6 backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
           <div className="space-y-3">
             <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-zinc-600" /> Linear Regression Model
@@ -256,7 +256,7 @@ export default function CampaignForecasting() {
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
               We calculate the trend lines using the <strong>Least Squares Method</strong>. This maps historical dates as indexes ($x$) and solves $y = mx + c$ to identify performance trends.
             </p>
-            <div className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl font-mono text-[11px] text-zinc-800 dark:text-zinc-300 space-y-1">
+            <div className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-300 dark:border-zinc-600 p-4 rounded-xl font-mono text-[11px] text-zinc-800 dark:text-zinc-300 space-y-1">
               <p className="font-semibold text-zinc-500">// Least Squares Formula</p>
               <p>slope (m) = Sum((x - meanX) * (y - meanY)) / Sum((x - meanX)^2)</p>
               <p>intercept (c) = meanY - slope * meanX</p>
@@ -264,7 +264,7 @@ export default function CampaignForecasting() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-700 rounded-2xl p-6 backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
+        <div className="bg-white dark:bg-zinc-900/40 border border-zinc-300 dark:border-zinc-600 rounded-2xl p-6 backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
           <div className="space-y-3">
             <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-200 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-emerald-500" /> Blended Moving Average

@@ -39,9 +39,9 @@ export default function Sidebar() {
   const sidebarContent = (
     <>
       {/* Brand Logo */}
-      <div className="p-5 border-b border-zinc-200 dark:border-zinc-700">
+      <div className="p-5 border-b border-zinc-300 dark:border-zinc-600">
         <Link href="/dashboard" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
-          <div className="w-8 h-8 rounded-lg bg-zinc-950 dark:bg-zinc-800 flex items-center justify-center border border-zinc-800/20 dark:border-zinc-700/30">
+          <div className="w-8 h-8 rounded-lg bg-zinc-950 dark:bg-zinc-800 flex items-center justify-center border border-zinc-800/20 dark:border-zinc-600/50">
             <BarChart3 className="w-4 h-4 text-white" />
           </div>
           <div>
@@ -82,7 +82,7 @@ export default function Sidebar() {
       </nav>
 
       {/* User Info, Theme & Logout */}
-      <div className="p-3 border-t border-zinc-200 dark:border-zinc-700 space-y-2">
+      <div className="p-3 border-t border-zinc-300 dark:border-zinc-600 space-y-2">
         <div className="flex items-center justify-between px-3 py-1">
           <span className="text-[10px] text-zinc-400 dark:text-zinc-500 tracking-wider font-semibold uppercase">Theme</span>
           <button
@@ -119,7 +119,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile Top Bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-700 px-4 py-3 flex items-center justify-between">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-zinc-950 border-b border-zinc-300 dark:border-zinc-600 px-4 py-3 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-md bg-zinc-950 dark:bg-zinc-800 flex items-center justify-center border border-zinc-800/10">
             <BarChart3 className="w-3.5 h-3.5 text-white" />
@@ -140,14 +140,14 @@ export default function Sidebar() {
       )}
 
       {/* Mobile Sidebar Drawer */}
-      <aside className={`md:hidden fixed top-0 left-0 z-40 h-full w-72 bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-700 flex flex-col transform transition-transform duration-200 ease-out ${
+      <aside className={`md:hidden fixed top-0 left-0 z-40 h-full w-72 bg-white dark:bg-zinc-950 border-r border-zinc-300 dark:border-zinc-600 flex flex-col transform transition-transform duration-200 ease-out ${
         mobileOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {sidebarContent}
       </aside>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-60 h-screen bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-700 flex-col sticky top-0 transition-colors">
+      <aside className="hidden md:flex w-60 h-screen bg-white dark:bg-zinc-950 border-r border-zinc-300 dark:border-zinc-600 flex-col sticky top-0 transition-colors">
         {sidebarContent}
       </aside>
     </>
