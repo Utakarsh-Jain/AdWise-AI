@@ -42,7 +42,7 @@ export default function CampaignInsights() {
       // 1. Header 3
       if (line.startsWith('### ')) {
         return (
-          <h3 key={idx} className="text-lg font-bold text-slate-800 dark:text-slate-100 mt-6 mb-3 flex items-center gap-2 border-b border-slate-200 dark:border-slate-900 pb-2 transition-colors">
+          <h3 key={idx} className="text-lg font-bold text-slate-800 dark:text-slate-100 mt-6 mb-3 flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 transition-colors">
             {line.replace('### ', '')}
           </h3>
         );
@@ -72,7 +72,7 @@ export default function CampaignInsights() {
       // 5. Notice blocks
       if (line.startsWith('*Notice:') || line.startsWith('*Note:')) {
         return (
-          <div key={idx} className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-4 rounded-xl text-xs text-slate-600 dark:text-slate-500 italic my-3 leading-relaxed flex items-center gap-2.5 transition-colors">
+          <div key={idx} className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 p-4 rounded-xl text-xs text-slate-600 dark:text-slate-500 italic my-3 leading-relaxed flex items-center gap-2.5 transition-colors">
             <Sparkles className="w-4 h-4 text-indigo-500/80 shrink-0" />
             <span>{line.replace(/\*/g, '')}</span>
           </div>
@@ -129,7 +129,7 @@ export default function CampaignInsights() {
         <button
           onClick={fetchInsights}
           disabled={loading}
-          className="flex items-center gap-2 px-3 py-1.5 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white/40 dark:bg-slate-900/40 hover:bg-slate-50 dark:hover:bg-slate-900/80 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl text-xs font-semibold transition-all self-start"
+          className="flex items-center gap-2 px-3 py-1.5 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white/40 dark:bg-slate-900/40 hover:bg-slate-50 dark:hover:bg-slate-900/80 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 rounded-xl text-xs font-semibold transition-all self-start"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           Refresh Insights
@@ -143,7 +143,7 @@ export default function CampaignInsights() {
         </div>
       ) : error || !insights ? (
         <div className="h-[50vh] flex flex-col justify-center items-center text-center max-w-md mx-auto space-y-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-full text-indigo-500 dark:text-indigo-400 shadow-xl shadow-indigo-500/5 transition-colors">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4 rounded-full text-indigo-500 dark:text-indigo-400 shadow-xl shadow-indigo-500/5 transition-colors">
             <AlertCircle className="w-10 h-10" />
           </div>
           <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 transition-colors">No Insights Generated</h2>
@@ -154,7 +154,7 @@ export default function CampaignInsights() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
           {/* Main Insights Report Card */}
-          <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-8 lg:col-span-3 backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
+          <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 lg:col-span-3 backdrop-blur-md relative overflow-hidden shadow-sm dark:shadow-none transition-colors">
             {/* Background glowing indicator */}
             <div className="absolute top-0 right-0 w-36 h-36 bg-indigo-600/5 rounded-full blur-2xl pointer-events-none" />
             <div className="prose prose-slate dark:prose-invert max-w-none transition-colors">
@@ -165,14 +165,14 @@ export default function CampaignInsights() {
           {/* Side Info Cards */}
           <div className="space-y-6">
             {/* Engine Stats */}
-            <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 backdrop-blur-md space-y-4 shadow-sm dark:shadow-none transition-colors">
+            <div className="bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 backdrop-blur-md space-y-4 shadow-sm dark:shadow-none transition-colors">
               <h4 className="text-xs font-extrabold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2 transition-colors">
                 <Lightbulb className="w-4 h-4 text-indigo-500 dark:text-indigo-400" /> Marketing Advisor
               </h4>
               <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed transition-colors">
                 Our integration feeds Gemini structured parameters (Top Campaigns, Budget Reallocation suggestions, Platform Spend Share) to extract expert marketing insights.
               </p>
-              <div className="pt-2 border-t border-slate-200 dark:border-slate-900 space-y-2 transition-colors">
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-2 transition-colors">
                 <div className="flex justify-between items-center text-[10px] font-semibold text-slate-500">
                   <span>Model Used</span>
                   <span className="text-slate-800 dark:text-slate-300 transition-colors">gemini-2.5-flash</span>

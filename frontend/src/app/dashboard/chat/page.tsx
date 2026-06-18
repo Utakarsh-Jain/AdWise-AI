@@ -155,7 +155,7 @@ Feel free to ask me detailed analytical questions! Here are some ideas:
         parts.push(text.substring(lastIndex, match.index));
       }
       parts.push(
-        <strong key={match.index} className="font-bold text-slate-200">
+        <strong key={match.index} className="font-bold text-zinc-950 dark:text-slate-100">
           {match[1]}
         </strong>
       );
@@ -172,7 +172,7 @@ Feel free to ask me detailed analytical questions! Here are some ideas:
   return (
     <div className="h-[calc(100vh-6.5rem)] md:h-[calc(100vh-6rem)] flex flex-col justify-between z-10 relative">
       {/* Header */}
-      <div className="pb-4 border-b border-zinc-200 dark:border-zinc-900 flex items-center justify-between shrink-0">
+      <div className="pb-4 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between shrink-0">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">
             AI Data Analyst Chat
@@ -182,7 +182,7 @@ Feel free to ask me detailed analytical questions! Here are some ideas:
           </p>
         </div>
         
-        <div className="hidden sm:flex bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 rounded-xl text-zinc-900 dark:text-zinc-200 text-xs font-semibold items-center gap-2 backdrop-blur-md">
+        <div className="hidden sm:flex bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 rounded-xl text-zinc-900 dark:text-zinc-200 text-xs font-semibold items-center gap-2 backdrop-blur-md">
           <Sparkles className="w-3.5 h-3.5 text-zinc-500 animate-pulse" />
           Virtual CMO Online
         </div>
@@ -203,16 +203,16 @@ Feel free to ask me detailed analytical questions! Here are some ideas:
               <div className={`p-2 rounded-xl border shrink-0 ${
                 isUser 
                   ? 'bg-zinc-950 border-zinc-900 text-white' 
-                  : 'bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-850 text-zinc-600 dark:text-zinc-400'
+                  : 'bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400'
               }`}>
                 {isUser ? <UserIcon className="w-4 h-4" /> : <MessageSquare className="w-4 h-4 text-zinc-500" />}
               </div>
 
               {/* Message Balloons */}
-              <div className={`rounded-2xl p-4 border text-zinc-800 dark:text-zinc-250 shadow-sm ${
+              <div className={`rounded-2xl p-4 border text-zinc-800 dark:text-zinc-200 shadow-sm ${
                 isUser 
-                  ? 'bg-zinc-50 dark:bg-zinc-900 border-zinc-250/80 dark:border-zinc-800/80 rounded-tr-none' 
-                  : 'bg-white dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800/80 rounded-tl-none backdrop-blur-md'
+                  ? 'bg-zinc-50 dark:bg-zinc-900 border-zinc-200/80 dark:border-zinc-700 rounded-tr-none' 
+                  : 'bg-white dark:bg-zinc-900/70 border-zinc-200 dark:border-zinc-700 rounded-tl-none backdrop-blur-md'
               }`}>
                 {isUser ? (
                   <p className="text-xs text-zinc-900 dark:text-zinc-200 leading-relaxed font-medium">{msg.text}</p>
@@ -230,10 +230,10 @@ Feel free to ask me detailed analytical questions! Here are some ideas:
         {/* Loading Indicator */}
         {loading && (
           <div className="flex items-start gap-3.5 max-w-[80%]">
-            <div className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 text-zinc-650 dark:text-zinc-400 shrink-0">
+            <div className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 shrink-0">
               <MessageSquare className="w-4 h-4 text-zinc-500" />
             </div>
-            <div className="rounded-2xl p-4 bg-white dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-tl-none backdrop-blur-md flex items-center gap-2">
+            <div className="rounded-2xl p-4 bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-700 rounded-tl-none backdrop-blur-md flex items-center gap-2">
               <Loader2 className="w-4 h-4 animate-spin text-zinc-900 dark:text-zinc-100" />
               <span className="text-xs text-zinc-500 font-medium">AI Analyst is calculating...</span>
             </div>
@@ -251,13 +251,13 @@ Feel free to ask me detailed analytical questions! Here are some ideas:
       </div>
 
       {/* Input Area + Action Chips */}
-      <div className="pt-4 border-t border-zinc-200 dark:border-zinc-900 shrink-0 space-y-4 bg-zinc-50 dark:bg-zinc-950">
+      <div className="pt-4 border-t border-zinc-200 dark:border-zinc-700 shrink-0 space-y-4 bg-zinc-50 dark:bg-zinc-950">
         {/* Action chips (Quick prompts) */}
         {messages.length === 1 && (
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => handleQuickAction('Which is my best campaign?')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750 bg-white dark:bg-zinc-900/30 hover:bg-zinc-50 dark:hover:bg-zinc-900/60 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 text-xs font-semibold transition-all group"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 bg-white dark:bg-zinc-900/70 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 text-xs font-semibold transition-all group"
             >
               <Target className="w-3.5 h-3.5 text-zinc-600" />
               Best performing campaign
@@ -265,15 +265,15 @@ Feel free to ask me detailed analytical questions! Here are some ideas:
             </button>
             <button
               onClick={() => handleQuickAction('Which campaign is the worst?')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750 bg-white dark:bg-zinc-900/30 hover:bg-zinc-50 dark:hover:bg-zinc-900/60 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 text-xs font-semibold transition-all group"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 bg-white dark:bg-zinc-900/70 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 text-xs font-semibold transition-all group"
             >
-              <TrendingUp className="w-3.5 h-3.5 text-zinc-650" />
+              <TrendingUp className="w-3.5 h-3.5 text-zinc-600" />
               Identify underperforming campaigns
               <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity ml-0.5" />
             </button>
             <button
               onClick={() => handleQuickAction('How should I reallocate my budgets?')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-750 bg-white dark:bg-zinc-900/30 hover:bg-zinc-50 dark:hover:bg-zinc-900/60 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 text-xs font-semibold transition-all group"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 bg-white dark:bg-zinc-900/70 hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 text-xs font-semibold transition-all group"
             >
               <Sparkles className="w-3.5 h-3.5 text-zinc-500 animate-pulse" />
               Show budget optimizations
@@ -290,7 +290,7 @@ Feel free to ask me detailed analytical questions! Here are some ideas:
             onChange={(e) => setInput(e.target.value)}
             disabled={loading}
             placeholder={loading ? 'Waiting for response...' : 'Ask your AI Analyst... e.g. "Platform rankings?"'}
-            className="flex-1 px-4 py-3.5 rounded-xl border border-zinc-250 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950/40 dark:focus:ring-white/20 focus:border-transparent transition-all text-xs disabled:opacity-50"
+            className="flex-1 px-4 py-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/80 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-950/40 dark:focus:ring-white/20 focus:border-zinc-900 dark:focus:border-zinc-500 transition-all text-xs disabled:opacity-50"
           />
           <button
             type="submit"
